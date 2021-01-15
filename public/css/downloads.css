@@ -1,0 +1,50 @@
+body {
+  background-color: whitesmoke;
+}
+
+ul {
+  margin: 10px;
+  padding: 0;
+  list-style: none;
+}
+ul .list_item {
+  background-color: white;
+  font-weight: 400;
+  font-family: Roboto;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-top-color: rgba(0, 0, 0, 0);
+  transition: background-color 0.1s linear;
+}
+ul .list_item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+ul .list_item:first-child {
+  border-top-color: rgba(0, 0, 0, 0.12);
+}
+ul .list_item .body {
+  display: flex;
+  padding: 16px;
+}
+ul .list_item .body .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 15px;
+  margin-right: 16px;
+  object-fit: cover;
+}
+ul .list_item .body .content {
+  height: 100%;
+  width: 100%;
+}
+ul .list_item .body .content .first_line {
+  margin: 0;
+  font-size: 16px;
+  color: black;
+}
+ul .list_item .body .content .second_line {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/*# sourceMappingURL=downloads.css.map */

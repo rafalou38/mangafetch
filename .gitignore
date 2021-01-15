@@ -1,0 +1,10 @@
+build
+.vscode
+__pycache__
+dist
+out
+test
+tmp
+
+*.pdf
+*.log

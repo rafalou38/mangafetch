@@ -1,0 +1,261 @@
+.cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background-color: black;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.details {
+  position: fixed;
+  z-index: 10;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: white;
+}
+.details.visible {
+  opacity: 1;
+  margin: auto;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  pointer-events: all;
+  overflow: auto;
+  top: 0;
+  width: 80%;
+  height: 100%;
+  min-width: 450px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.details .content {
+  opacity: 1;
+  margin-bottom: 100px;
+  margin-bottom: 10px;
+  height: 0px;
+}
+.details .content .banner {
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+}
+.details .content .head {
+  display: flex;
+}
+.details .content .head .manga-couverture {
+  margin-left: 10px;
+  margin-top: -40px;
+  height: 250px;
+}
+.details .content .head .infos {
+  padding: 20px;
+}
+.details .content .head .infos .title {
+  margin: 0;
+  font-weight: bold;
+}
+.details .content .head .infos .label {
+  display: list-item;
+  list-style: square inside;
+  margin: 0;
+  font-weight: 500;
+}
+.details .content .head .infos .content {
+  margin: 0;
+  opacity: 1;
+  color: dimgray;
+  font-weight: normal;
+}
+.details .content button.bookmark {
+  margin: 0 auto;
+  display: block;
+}
+.details .content button.bookmark .bookmarked-icon {
+  display: none;
+}
+.details .content button.bookmark .not-bookmarked-icon {
+  display: inline;
+}
+.details .content button.bookmarked {
+  margin: 0 auto;
+  display: block;
+}
+.details .content button.bookmarked .bookmarked-icon {
+  display: inline;
+}
+.details .content button.bookmarked .not-bookmarked-icon {
+  display: none;
+}
+.details .content .description {
+  padding: 20px;
+  padding-top: 0;
+}
+.details .content .mdc-data-table {
+  width: 100%;
+  max-width: 570px;
+  min-width: 330px;
+  margin: 0 auto;
+  display: block;
+  height: min-content;
+  max-height: 95vh;
+  overflow-x: auto;
+}
+.details .content .filter {
+  background-color: var(--mdc-theme-secondary);
+  border-radius: 10px 10px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.details .content .filter h5 {
+  color: white;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
+.details .content .filter .filter-labels-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.details .content .filter .filter-labels-container .mdc-text-field {
+  height: 56px;
+  margin: 5px;
+}
+.details .content .download {
+  background-color: var(--mdc-theme-secondary);
+  border-radius: 0 0 10px 10px;
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 15px;
+}
+.details .content .download .how-much-selected {
+  width: 100%;
+  text-align: center;
+  margin: 0 0 14px 0;
+  color: white;
+  display: none;
+}
+
+body {
+  margin: 0;
+}
+
+.mdc-top-app-bar {
+  position: sticky;
+  top: 0;
+}
+.mdc-top-app-bar .mdc-text-field {
+  margin-right: 10px;
+}
+
+.material-icons {
+  user-select: none;
+}
+
+.expand_more {
+  display: none;
+  place-items: center;
+  padding: 20px;
+}
+
+.mdc-card {
+  margin: 10px;
+  transition: all 0.3s;
+  backface-visibility: hidden;
+  width: 200px;
+}
+.mdc-card__media {
+  background-image: url("https://scansmangas.xyz/wp-content/uploads/2020/12/Solo-Spell-Caster.jpg");
+  height: 300px;
+  image-rendering: -webkit-optimize-contrast;
+}
+.mdc-card__content {
+  padding: 16px;
+  height: min-content;
+}
+.mdc-card__content h6 {
+  margin: 0;
+}
+.mdc-card:hover {
+  box-shadow: 0px 5px 14px -1px rgba(0, 0, 0, 0.75);
+  transform: translateY(-10px);
+}
+
+.review {
+  display: flex;
+  align-items: center;
+}
+.review.active_manga_review {
+  width: 190px;
+  margin: 5px auto 20px;
+  padding: 15px;
+  border: 1px solid #bdbdbd;
+  border-radius: 20px;
+}
+.review .star {
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  background-image: linear-gradient(90deg, gold 100%, gray -100%);
+}
+.review .note {
+  margin-left: auto;
+  font-weight: 500;
+  opacity: 0.5;
+}
+
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.load {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: white;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  z-index: 10282;
+  pointer-events: none;
+}
+.load .mdc-linear-progress {
+  position: sticky;
+  top: 0px;
+}
+
+.notification::after {
+  content: var(--notif-text) "";
+  color: white;
+  background: var(--mdc-theme-secondary);
+  padding: 6px;
+  border-radius: 200px;
+  font-family: Roboto;
+  font-size: 12px;
+  position: absolute;
+  right: 0;
+}
+
+.notification {
+  text-decoration: none;
+  position: relative;
+}
+
+/*# sourceMappingURL=index.css.map */
