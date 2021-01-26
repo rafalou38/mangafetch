@@ -10,6 +10,7 @@ import time
 import threading
 import platform
 import subprocess
+
 save = MagicSave(dev=True)
 
 pretty_errors.configure(
@@ -21,10 +22,10 @@ pretty_errors.configure(
     lines_before=2,
     lines_after=2,
     line_color="═"
-               + pretty_errors.RED
-               + "❯ "
-               + pretty_errors.default_config.line_color
-               + "│ ",
+    + pretty_errors.RED
+    + "❯ "
+    + pretty_errors.default_config.line_color
+    + "│ ",
     code_color="   " + pretty_errors.default_config.code_color + "│ ",
     truncate_code=True,
     display_arrow=True,
@@ -142,8 +143,8 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
             "cover": cover,
             "name": "downloading",
             "percent": int(os.path.splitext(os.path.split(file)[1])[0])
-                       / len(pages)
-                       / 2,
+            / len(pages)
+            / 2,
             "out": "",
         }
         eel.diplay_inividual_chapter_progresion(download_steps[task_id])
@@ -178,6 +179,7 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
 
 def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id):
     global download_steps
+    print("th: download group", manga_id, chapters)
     info = api.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
@@ -211,7 +213,7 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
                 "percent": c_page / pages_cnt / 2,
                 "out": "",
             }
-            print(download_steps[task_id]["name"], download_steps[task_id]["percent"])
+            eel.diplay_inividual_chapter_progresion(download_steps[task_id])
 
         # eel.diplay_inividual_chapter_progresion(
         # 	download_steps[task_id]
@@ -231,10 +233,11 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
             "percent": (step / 2) + 0.5,
             "out": "",
         }
+        eel.diplay_inividual_chapter_progresion(download_steps[task_id])
         # eel.diplay_inividual_chapter_progresion(
         # 	download_steps[task_id]
         # )
-        print(download_steps[task_id]["name"], download_steps[task_id]["percent"])
+        # print(download_steps[task_id]["name"], download_steps[task_id]["percent"])
 
     download_steps[task_id] = {
         "id": f"chapter {chapter} {manga_id}",
@@ -252,6 +255,7 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
 @eel.expose
 def download_group(chapters, manga):
     global threads
+    print("download group", manga, chapters)
     e = threading.Event()
     eid = id(e)
     th = threading.Thread(
@@ -294,9 +298,15 @@ def reveal_file(path):
         subprocess.Popen(["xdg-open", path])
 
 
-# download_group(["70", "72"], "the-promised-neverland")
-
-
+# download_group(
+#     list(map(str, range(80, 91))),
+#     "the-promised-neverland",
+# )
+# download_group(
+#     list(map(str, range(91, 100))),
+#     "the-promised-neverland",
+# )
+# input()
 eel.init('public')
-eel.start('html/download.html',
+eel.start('html/index.html',
           cmdline_args=["--incognito"], jinja_templates="html")
