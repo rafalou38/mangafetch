@@ -13,7 +13,7 @@ async function search(q) {
 async function load_more() {
 	if (current_page <= pages || last_query !== query){
 		$(".expand_more").style.display = "none"
-		r = await eel.search(query, current_page)();
+		let r = await eel.search(query, current_page)();
 		[result, pages] = r
 		add_results(result);
 		console.log(pages, current_page);

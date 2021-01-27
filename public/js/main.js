@@ -15,8 +15,8 @@ function update_stars() {
 				stars[i].style.backgroundImage =
 					"linear-gradient(90deg, gold -100%, gray -100%)";
 			}
-			for (var i = Math.floor(rate) - 1; i >= 0; --i) {
-				stars[i].style.backgroundImage =
+			for (var y = Math.floor(rate) - 1; y >= 0; --y) {
+				stars[y].style.backgroundImage =
 					"linear-gradient(90deg, gold 100%, gray -100%)";
 			}
 			let star = stars[rounded];

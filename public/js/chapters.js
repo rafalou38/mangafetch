@@ -3,9 +3,9 @@ var open_manga = "";
 const split_regex = /(\d[\d\-]*)(?:\/)*$/;
 const split_regex2 = /(\d[\d\-]*.*?)(?:\/)$/;
 
-function download_group(chapters, manga) {
+function download_group(ichapters, manga) {
 	addNotification(".downloads-tab");
-	eel.download_group(chapters, manga);
+	eel.download_group(ichapters, manga);
 }
 eel.expose(diplay_inividual_chapter_progresion);
 function diplay_inividual_chapter_progresion(info) {}
@@ -128,7 +128,7 @@ async function load_infos(manga) {
 	chapters = [];
 	for (const chapter of infos.chapters) {
 		let r = split_regex.exec(chapter);
-		let n = chapter;
+		let n;
 		if (r) {
 			n = [r[1], chapter];
 		} else {
