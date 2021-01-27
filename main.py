@@ -297,9 +297,8 @@ def download_chapter(chapter, manga_id):
 
 @eel.expose
 def stop_download(id):
-    logger.info(f"threads: stoped thread {id}")
+    logger.info(f"threads: stopping thread {id}")
     threads[int(id)][0].set()
-    del download_steps[threads[int(id)][0].manga_task_id]
 
 
 @eel.expose
