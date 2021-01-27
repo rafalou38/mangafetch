@@ -7,8 +7,6 @@ function download_group(ichapters, manga, group) {
   addNotification(".downloads-tab");
   eel.download_group(ichapters, manga, group);
 }
-eel.expose(diplay_inividual_chapter_progresion);
-function diplay_inividual_chapter_progresion(info) {}
 function download_chapter(uri) {
   const regex = /-([^\d]+)-(\d)+/;
   const r = regex.exec(uri);

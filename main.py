@@ -127,7 +127,7 @@ def display_favorites(filter):
 
 @eel.expose
 def get_curent_downloads():
-    logger.info("api: loaded downloads")
+    logger.info("main: loaded downloads")
     return list(download_steps.values())
 
 
@@ -140,7 +140,7 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     task_id = f"download_chapter_{chapter}_{manga_id}"
     event.manga_task_id = task_id
     files = []
-    pages = api.get_pages(chapter, manga_id)
+    pages, img_url = api.get_pages(chapter, manga_id)
     for file in api.download_chapter(chapter, manga_id, pages):
         if event.is_set():
             del download_steps[task_id]
@@ -203,16 +203,25 @@ def download_chapters_th(
     pages_cnt = 0
     c_page = 0
     logger.debug("download: getting pages")
+    download_steps[th_id] = {
+        "th_id": th_id,
+        "id": task_id,
+        "cover": cover,
+        "name": "getting pages",
+        "percent": 0,
+        "out": "",
+    }
+    eel.diplay_inividual_chapter_progresion(download_steps[th_id])
     for chapter in chapters:
-        cu_pages = api.get_pages(chapter, manga_id)
+        cu_pages, img_url = api.get_pages(chapter, manga_id)
         pages_cnt += len(cu_pages)
-        all_pages[chapter] = cu_pages
+        all_pages[chapter] = [cu_pages, img_url]
     logger.debug("download: downloading chapter")
     for chapter in chapters:
         bookmarks[chapter] = []
-        pages = all_pages[chapter]
+        pages, img_url = all_pages[chapter]
         logger.debug(f"download: chapter {chapter}")
-        for file in api.download_chapter(chapter, manga_id, pages):
+        for file in api.download_chapter(chapter, manga_id, pages, img_url):
             c_page += 1
             logger.debug(f"download: page {c_page}/{pages_cnt}")
             if event.is_set():

@@ -12,6 +12,8 @@ import os
 import atexit
 from urllib3.exceptions import ProtocolError
 
+from myLog import logger
+
 TMP_PATH = "tmp"
 IMG_PATH = os.path.join(TMP_PATH, "images")
 OUT_PATH = "out/"
@@ -159,19 +161,22 @@ def get_pages(chapter, manga_id):
     soup = BeautifulSoup(r.text, features="lxml")
     pages = soup.find("div", {"class": "nav_apb"}).findAll("a", text=rc("^\\d+$"))
     pages = list(map(lambda e: int(e.text), pages))
+    img_url = os.path.split(soup.select_one("div.area article div a img")["src"])[0].replace("\n", "")
 
-    return pages
+    return pages, img_url
 
 
-def download_chapter(chapter, manga_id, pages=None):
+def download_chapter(chapter, manga_id, pages=None, img_url=None):
     init()
-    tryes = 0
+    tries = 0
     if pages == None:
-        pages = get_pages(chapter, manga_id)
+        pages, img_url = get_pages(chapter, manga_id)
+    if img_url == None:
+        img_url = f"https://scansmangas.xyz/scans/{manga_id}/{chapter}/"
     for page in pages:
         while True:
             try:
-                uri = f"https://scansmangas.xyz/scans/{manga_id}/{chapter}/{page}.jpg"
+                uri = f"{img_url}/{page}.jpg"
                 path = os.path.join(IMG_PATH, manga_id, str(chapter))
                 r = session.get(uri, stream=True)
                 if not os.path.exists(path):
@@ -186,8 +191,9 @@ def download_chapter(chapter, manga_id, pages=None):
                     break
 
             except ProtocolError as err:
-                tryes += 1
-                if tryes > 5:
+                tries += 1
+                if tries > 5:
+                    logger.critical("api: ProtocolError downloading image from \"" + uri + "\"")
                     raise err
-                time.sleep(1)
+                logger.error("api: ProtocolError downloading image from \"" + uri + "\"")
         yield filename

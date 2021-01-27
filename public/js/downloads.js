@@ -5,7 +5,7 @@ var downloads = {};
 function diplay_inividual_chapter_progresion(info) {
 	// f.push(info)
 	// console.log(JSON.stringify(f));
-
+	if (document.URL.indexOf("download") == -1) return;
 	if (!downloads[info.th_id]) {
 		var li = document.createElement("li");
 		downloads[info.th_id] = li;
