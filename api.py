@@ -1,3 +1,5 @@
+import time
+
 from bs4 import BeautifulSoup
 import urllib
 import magic
@@ -187,4 +189,5 @@ def download_chapter(chapter, manga_id, pages=None):
                 tryes += 1
                 if tryes > 5:
                     raise err
+                time.sleep(1)
         yield filename
