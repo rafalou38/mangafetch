@@ -52,7 +52,6 @@ def search(query="", page=1):
 
 
 def get_info(id):
-    print("toto")
     uri = f"https://scansmangas.xyz/manga/{id}/"
 
     result = session.get(uri)
