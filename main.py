@@ -9,6 +9,7 @@ import api
 import eel
 from os.path import isdir
 from myLog import logger
+
 logger.setLevel("DEBUG")
 logger.info("main: starting app")
 
@@ -61,14 +62,14 @@ threads = {}
 
 @eel.expose
 def search(query="", page=1):
-    logger.info("api: searched \"" + query+"\"")
+    logger.info('api: searched "' + query + '"')
     result, pages = api.search(query, page)
     return result, pages
 
 
 @eel.expose
 def get_info(id):
-    logger.info("api: got info for manga \"" + id+"\"")
+    logger.info('api: got info for manga "' + id + '"')
     return api.get_info(id)
 
 
@@ -78,8 +79,7 @@ def get_favorites(filter=""):
     favorites = save.get("favorites")
     logger.info("save: loaded favorites")
     if filter:
-        favorites = [
-            favorite for favorite in favorites if filter in favorite["id"]]
+        favorites = [favorite for favorite in favorites if filter in favorite["id"]]
     return favorites
 
 
@@ -95,7 +95,7 @@ def get_favorites_id():
 @eel.expose
 def add_to_favorites(manga):
     favorites = save.get("favorites")
-    logger.info("save: adding to favorites\"" + manga["id"]+"\"")
+    logger.info('save: adding to favorites"' + manga["id"] + '"')
     if api.is_id_valid(manga["id"]):
         if favorites:
             if manga not in favorites:
@@ -108,20 +108,20 @@ def add_to_favorites(manga):
         save.set({"favorites": favorites})
         return True
     else:
-        logger.error("save: failed to add \"" + manga["id"]+"\" to favorites")
+        logger.error('save: failed to add "' + manga["id"] + '" to favorites')
         return False
 
 
 @eel.expose
 def remove_from_favorites(manga):
     favorites = save.get("favorites")
-    logger.info("save: removing from favorites\"" + str(manga)+"\"")
+    logger.info('save: removing from favorites"' + str(manga) + '"')
     for favorite in favorites:
         if manga["id"] == favorite["id"]:
             favorites.remove(manga)
             save.set({"favorites": favorites})
             return True
-    logger.error("save: failed to remove  \"" + manga["id"]+"\" to favorites")
+    logger.error('save: failed to remove  "' + manga["id"] + '" to favorites')
 
 
 @eel.expose
@@ -197,11 +197,12 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
     global download_steps
 
     logger.info(
-        f"download: started download of {chapters} from {manga_id} in thread {th_id}")
+        f"download: started download of {chapters} from {manga_id} in thread {th_id}"
+    )
     info = api.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
-    task_id = f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}"
+    task_id = f"download {manga_id} chapters {chapters[0]} to {chapters[-1:][0]}"
     event.manga_task_id = task_id
     bookmarks = {}
     all_pages = {}
@@ -221,45 +222,47 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
             c_page += 1
             logger.debug(f"download: page {c_page}/{len(pages)}")
             if event.is_set():
-                del download_steps[task_id]
+                del download_steps[th_id]
                 return
             bookmarks[chapter].append(file)
-            download_steps[task_id] = {
+            download_steps[th_id] = {
                 "th_id": th_id,
-                "id": f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}",
+                "id": task_id,
                 "cover": cover,
                 "name": "downloading chapter" + str(chapter),
                 "percent": c_page / pages_cnt / 2,
                 "out": "",
             }
-            eel.diplay_inividual_chapter_progresion(download_steps[task_id])
+            eel.diplay_inividual_chapter_progresion(download_steps[th_id])
 
     logger.debug("download: merging pdf")
     OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
     for step in pdfManip.mergeBookmarks(bookmarks, OUT_FILE):
         if event.is_set():
-            del download_steps[task_id]
+            del download_steps[th_id]
             return
-        download_steps[task_id] = {
+        download_steps[th_id] = {
             "th_id": th_id,
-            "id": f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}",
+            "id": task_id,
             "cover": cover,
             "name": f"merging pdf",
             "percent": (step / 2) + 0.5,
             "out": "",
         }
-        eel.diplay_inividual_chapter_progresion(download_steps[task_id])
+        eel.diplay_inividual_chapter_progresion(download_steps[th_id])
 
-    download_steps[task_id] = {
-        "id": f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}",
+    download_steps[th_id] = {
+        "th_id": th_id,
+        "id": task_id,
         "cover": cover,
         "name": f"finished",
         "percent": 1,
         "out": OUT_FILE,
     }
-    eel.diplay_inividual_chapter_progresion(download_steps[task_id])
+    eel.diplay_inividual_chapter_progresion(download_steps[th_id])
     logger.info(
-        f"download: finished download of {chapters} from {manga_id} in thread {th_id}")
+        f"download: finished download of {chapters} from {manga_id} in thread {th_id}"
+    )
     # del download_steps[task_id]
 
 
@@ -267,7 +270,8 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
 def download_group(chapters, manga):
     global threads
     logger.info(
-        f"threads: starting thread to download chapters {chapters} from {manga}")
+        f"threads: starting thread to download chapters {chapters} from {manga}"
+    )
     e = threading.Event()
     eid = id(e)
     th = threading.Thread(
@@ -283,7 +287,8 @@ def download_group(chapters, manga):
 def download_chapter(chapter, manga_id):
     global threads
     logger.info(
-        f"threads: starting thread to download chapter {chapter} from {manga_id}")
+        f"threads: starting thread to download chapter {chapter} from {manga_id}"
+    )
     e = threading.Event()
     eid = id(e)
     th = threading.Thread(
@@ -321,6 +326,5 @@ def reveal_file(path):
 #     "the-promised-neverland",
 # )
 # input()
-eel.init('public')
-eel.start('html/index.html',
-          cmdline_args=["--incognito"], jinja_templates="html")
+eel.init("public")
+eel.start("html/index.html", cmdline_args=["--incognito"], jinja_templates="html")

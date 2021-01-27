@@ -6,9 +6,9 @@ function diplay_inividual_chapter_progresion(info) {
 	// f.push(info)
 	// console.log(JSON.stringify(f));
 
-	if (!downloads[info.id]) {
+	if (!downloads[info.th_id]) {
 		var li = document.createElement("li");
-		downloads[info.id] = li;
+		downloads[info.th_id] = li;
 
 		li.classList.add("list_item");
 		li.dataset.id = info.th_id;
@@ -37,12 +37,12 @@ function diplay_inividual_chapter_progresion(info) {
 		</div>
 		`;
 
-		downloads[info.id] = li;
+		downloads[info.th_id] = li;
 		$("ul").appendChild(li);
 
 		init.linearProgress();
 	} else {
-		li = downloads[info.id];
+		li = downloads[info.th_id];
 		li.querySelector(".first_line").innerText = info.id;
 		li.querySelector(".second_line").innerText = info.name;
 		li.querySelector(".avatar").innerText = info.cover;
