@@ -54,14 +54,14 @@ def dict_chunk(in_dict, group):
 @eel.expose
 def search(query="", page=1):
     logger.info('api: searched "' + query + '"')
-    result, pages = api.search(query, page)
+    result, pages = api.scansmangas_xyz.search(query, page)
     return result, pages
 
 
 @eel.expose
 def get_info(id):
     logger.info('api: got info for manga "' + id + '"')
-    return api.get_info(id)
+    return api.scansmangas_xyz.get_info(id)
 
 
 # ==> FAVORITES
@@ -87,7 +87,7 @@ def get_favorites_id():
 def add_to_favorites(manga):
     favorites = save.get("favorites")
     logger.info('save: adding to favorites"' + manga["id"] + '"')
-    if api.is_id_valid(manga["id"]):
+    if api.scansmangas_xyz.is_id_valid(manga["id"]):
         if favorites:
             if manga not in favorites:
                 favorites.append(manga)
@@ -134,14 +134,14 @@ def get_curent_downloads():
 def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     global download_steps
     OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
-    info = api.get_info(manga_id)
+    info = api.scansmangas_xyz.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
     task_id = f"download_chapter_{chapter}_{manga_id}"
     event.manga_task_id = task_id
     files = []
-    pages, img_url = api.get_pages(chapter, manga_id)
-    for file in api.download_chapter(chapter, manga_id, pages):
+    pages, img_url = api.scansmangas_xyz.get_pages(chapter, manga_id)
+    for file in api.scansmangas_xyz.download_chapter(chapter, manga_id, pages):
         if event.is_set():
             del download_steps[task_id]
             return
@@ -151,7 +151,7 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
             "cover": cover,
             "name": "downloading",
             "percent": int(os.path.splitext(os.path.split(file)[1])[0])
-            / len(pages)
+                       / len(pages)
             / 2,
             "out": "",
         }
@@ -193,7 +193,7 @@ def download_chapters_th(
         f"download: started download of {chapters} from {manga_id} in thread {th_id}"
     )
     chapters.sort()
-    info = api.get_info(manga_id)
+    info = api.scansmangas_xyz.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
     task_id = f"download {manga_id} chapters {chapters[0]} to {chapters[-1:][0]}"
@@ -213,7 +213,7 @@ def download_chapters_th(
     }
     eel.diplay_inividual_chapter_progresion(download_steps[th_id])
     for chapter in chapters:
-        cu_pages, img_url = api.get_pages(chapter, manga_id)
+        cu_pages, img_url = api.scansmangas_xyz.get_pages(chapter, manga_id)
         pages_cnt += len(cu_pages)
         all_pages[chapter] = [cu_pages, img_url]
     logger.debug("download: downloading chapter")
@@ -221,7 +221,7 @@ def download_chapters_th(
         bookmarks[chapter] = []
         pages, img_url = all_pages[chapter]
         logger.debug(f"download: chapter {chapter}")
-        for file in api.download_chapter(chapter, manga_id, pages, img_url):
+        for file in api.scansmangas_xyz.download_chapter(chapter, manga_id, pages, img_url):
             c_page += 1
             logger.debug(f"download: page {c_page}/{pages_cnt}")
             if event.is_set():
