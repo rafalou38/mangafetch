@@ -1,7 +1,7 @@
 import os
 import appdirs
 import json
-
+from myLog import logger
 
 class MagicSave(object):
 	def __init__(self, dev=False):
@@ -9,7 +9,7 @@ class MagicSave(object):
 		self.CONFIG_MAIN_FILE = os.path.join(self.CONFIG_DIR, "save.json")
 		self.indent = 4 if dev else 0
 
-		print(self.CONFIG_MAIN_FILE)
+		logger.info("Save: saving data in " + self.CONFIG_MAIN_FILE)
 
 		self.data = {}
 		if not os.path.exists(self.CONFIG_DIR):

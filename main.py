@@ -1,15 +1,38 @@
-import eel
-import api
-import pdfManip
-import pretty_errors
-from pprint import pprint
-from data import MagicSave
-import os
-import debug_values
-import time
-import threading
-import platform
 import subprocess
+import platform
+import threading
+import os
+from data import MagicSave
+import pretty_errors
+import pdfManip
+import api
+import eel
+from os.path import isdir
+from myLog import logger
+logger.setLevel("DEBUG")
+logger.info("main: starting app")
+
+
+logger.debug("import: eel")
+
+logger.debug("import: api")
+
+logger.debug("import: pdf")
+
+logger.debug("import: pretty_errors")
+
+# logger.debug("import: eel")
+# from pprint import pprint
+logger.debug("import: save")
+
+logger.debug("import: os")
+
+logger.debug("import: threading")
+
+logger.debug("import: platform")
+
+logger.debug("import: subprocess")
+
 
 save = MagicSave(dev=True)
 
@@ -38,14 +61,14 @@ threads = {}
 
 @eel.expose
 def search(query="", page=1):
-    print("searched", query)
+    logger.info("api: searched \"" + query+"\"")
     result, pages = api.search(query, page)
     return result, pages
 
 
 @eel.expose
 def get_info(id):
-    print("get_info", id)
+    logger.info("api: got info for manga \"" + id+"\"")
     return api.get_info(id)
 
 
@@ -53,14 +76,17 @@ def get_info(id):
 @eel.expose
 def get_favorites(filter=""):
     favorites = save.get("favorites")
+    logger.info("save: loaded favorites")
     if filter:
-        favorites = [favorite for favorite in favorites if filter in favorite["id"]]
+        favorites = [
+            favorite for favorite in favorites if filter in favorite["id"]]
     return favorites
 
 
 @eel.expose
 def get_favorites_id():
     favorites = save.get("favorites")
+    logger.info("save: loaded favorites ids")
     if favorites:
         favorites = [favorite["id"] for favorite in favorites]
     return favorites
@@ -69,7 +95,7 @@ def get_favorites_id():
 @eel.expose
 def add_to_favorites(manga):
     favorites = save.get("favorites")
-    print("added to favorites : ", manga)
+    logger.info("save: adding to favorites\"" + manga["id"]+"\"")
     if api.is_id_valid(manga["id"]):
         if favorites:
             if manga not in favorites:
@@ -82,25 +108,26 @@ def add_to_favorites(manga):
         save.set({"favorites": favorites})
         return True
     else:
-        print("failed")
+        logger.error("save: failed to add \"" + manga["id"]+"\" to favorites")
         return False
 
 
 @eel.expose
 def remove_from_favorites(manga):
     favorites = save.get("favorites")
-    print("remove from favorites : ", manga)
+    logger.info("save: removing from favorites\"" + str(manga)+"\"")
     for favorite in favorites:
         if manga["id"] == favorite["id"]:
             favorites.remove(manga)
             save.set({"favorites": favorites})
             return True
-        print("failed to remove favorite", manga)
+    logger.error("save: failed to remove  \"" + manga["id"]+"\" to favorites")
 
 
 @eel.expose
 def display_favorites(filter):
     favorites = save.get("favorites")
+    logger.info("save: loaded favorites")
     eel.add_results(favorites)
 
 
@@ -109,20 +136,13 @@ def display_favorites(filter):
 
 @eel.expose
 def get_curent_downloads():
+    logger.info("api: loaded downloads")
     return list(download_steps.values())
 
 
 def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     global download_steps
     OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
-    # for step in debug_values.download_steps:
-    #     if event.is_set():
-    #         return
-    #     step["th_id"] = th_id
-    #     download_steps[step["id"]] = step
-    #     eel.diplay_inividual_chapter_progresion(step)
-    #     time.sleep(0.1)
-    # return
     info = api.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
@@ -132,10 +152,7 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     pages = api.get_pages(chapter, manga_id)
     for file in api.download_chapter(chapter, manga_id, pages):
         if event.is_set():
-            print(download_steps)
             del download_steps[task_id]
-            print(download_steps)
-            print(task_id, "stoped")
             return
         download_steps[task_id] = {
             "th_id": th_id,
@@ -154,7 +171,6 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     for step in pdfManip.merge(files, OUT_FILE):
         if event.is_set():
             del download_steps[task_id]
-            print(task_id, "stoped")
             return
         download_steps[task_id] = {
             "th_id": th_id,
@@ -179,7 +195,9 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
 
 def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id):
     global download_steps
-    print("th: download group", manga_id, chapters)
+
+    logger.info(
+        f"download: started download of {chapters} from {manga_id} in thread {th_id}")
     info = api.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
@@ -189,20 +207,21 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
     all_pages = {}
     pages_cnt = 0
     c_page = 0
+    logger.debug("download: getting pages")
     for chapter in chapters:
         cu_pages = api.get_pages(chapter, manga_id)
         pages_cnt += len(cu_pages)
         all_pages[chapter] = cu_pages
+    logger.debug("download: downloading chapter")
     for chapter in chapters:
         bookmarks[chapter] = []
         pages = all_pages[chapter]
+        logger.debug(f"download: chapter {chapter}")
         for file in api.download_chapter(chapter, manga_id, pages):
             c_page += 1
+            logger.debug(f"download: page {c_page}/{len(pages)}")
             if event.is_set():
-                print(download_steps)
                 del download_steps[task_id]
-                print(download_steps)
-                print(task_id, "stoped")
                 return
             bookmarks[chapter].append(file)
             download_steps[task_id] = {
@@ -215,47 +234,40 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
             }
             eel.diplay_inividual_chapter_progresion(download_steps[task_id])
 
-        # eel.diplay_inividual_chapter_progresion(
-        # 	download_steps[task_id]
-        # )
-
+    logger.debug("download: merging pdf")
     OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
     for step in pdfManip.mergeBookmarks(bookmarks, OUT_FILE):
         if event.is_set():
             del download_steps[task_id]
-            print(task_id, "stoped")
             return
         download_steps[task_id] = {
             "th_id": th_id,
-            "id": f"chapter {chapter} {manga_id}",
+            "id": f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}",
             "cover": cover,
             "name": f"merging pdf",
             "percent": (step / 2) + 0.5,
             "out": "",
         }
         eel.diplay_inividual_chapter_progresion(download_steps[task_id])
-        # eel.diplay_inividual_chapter_progresion(
-        # 	download_steps[task_id]
-        # )
-        # print(download_steps[task_id]["name"], download_steps[task_id]["percent"])
 
     download_steps[task_id] = {
-        "id": f"chapter {chapter} {manga_id}",
+        "id": f"download_chapters_{manga_id}_{chapters[0]}_to_{chapters[-1:]}",
         "cover": cover,
         "name": f"finished",
         "percent": 1,
         "out": OUT_FILE,
     }
-    # eel.diplay_inividual_chapter_progresion(download_steps[task_id])
-    print(download_steps[task_id]["name"], download_steps[task_id]["percent"])
-
+    eel.diplay_inividual_chapter_progresion(download_steps[task_id])
+    logger.info(
+        f"download: finished download of {chapters} from {manga_id} in thread {th_id}")
     # del download_steps[task_id]
 
 
 @eel.expose
 def download_group(chapters, manga):
     global threads
-    print("download group", manga, chapters)
+    logger.info(
+        f"threads: starting thread to download chapters {chapters} from {manga}")
     e = threading.Event()
     eid = id(e)
     th = threading.Thread(
@@ -270,6 +282,8 @@ def download_group(chapters, manga):
 @eel.expose
 def download_chapter(chapter, manga_id):
     global threads
+    logger.info(
+        f"threads: starting thread to download chapter {chapter} from {manga_id}")
     e = threading.Event()
     eid = id(e)
     th = threading.Thread(
@@ -283,13 +297,14 @@ def download_chapter(chapter, manga_id):
 
 @eel.expose
 def stop_download(id):
+    logger.info(f"threads: stoped thread {id}")
     threads[int(id)][0].set()
     del download_steps[threads[int(id)][0].manga_task_id]
-    print("stoped", id)
 
 
 @eel.expose
 def reveal_file(path):
+    logger.info(f"system: revaealing file {path}")
     if platform.system() == "Windows":
         subprocess.Popen("explorer /select," + path, shell=True)
     elif platform.system() == "Darwin":
