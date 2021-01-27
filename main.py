@@ -7,33 +7,10 @@ import pretty_errors
 import pdfManip
 import api
 import eel
-from os.path import isdir
 from myLog import logger
 
 logger.setLevel("DEBUG")
 logger.info("main: starting app")
-
-
-logger.debug("import: eel")
-
-logger.debug("import: api")
-
-logger.debug("import: pdf")
-
-logger.debug("import: pretty_errors")
-
-# logger.debug("import: eel")
-# from pprint import pprint
-logger.debug("import: save")
-
-logger.debug("import: os")
-
-logger.debug("import: threading")
-
-logger.debug("import: platform")
-
-logger.debug("import: subprocess")
-
 
 save = MagicSave(dev=True)
 
@@ -58,6 +35,20 @@ pretty_errors.blacklist("C:\\Users\\Rafael\\Anaconda3")
 pretty_errors.replace_stderr()
 download_steps = {}
 threads = {}
+
+
+def dict_chunk(in_dict, group):
+    f = []
+    d = {}
+    for i, obj in enumerate(in_dict.items()):
+        d[obj[0]] = obj[1]
+        if not (i + 1) % int(group):
+            f.append(d)
+            d = {}
+    else:
+        if d:
+            f.append(d)
+    return f
 
 
 @eel.expose
@@ -193,12 +184,15 @@ def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
     # del download_steps[task_id]
 
 
-def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id):
+def download_chapters_th(
+    event: threading.Event, chapters: list, manga_id: str, group: int, th_id
+):
     global download_steps
 
     logger.info(
         f"download: started download of {chapters} from {manga_id} in thread {th_id}"
     )
+    chapters.sort()
     info = api.get_info(manga_id)
     cover = info["cover"]
     manga_id = info["id"]
@@ -220,7 +214,7 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
         logger.debug(f"download: chapter {chapter}")
         for file in api.download_chapter(chapter, manga_id, pages):
             c_page += 1
-            logger.debug(f"download: page {c_page}/{len(pages)}")
+            logger.debug(f"download: page {c_page}/{pages_cnt}")
             if event.is_set():
                 del download_steps[th_id]
                 return
@@ -236,20 +230,24 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
             eel.diplay_inividual_chapter_progresion(download_steps[th_id])
 
     logger.debug("download: merging pdf")
-    OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
-    for step in pdfManip.mergeBookmarks(bookmarks, OUT_FILE):
-        if event.is_set():
-            del download_steps[th_id]
-            return
-        download_steps[th_id] = {
-            "th_id": th_id,
-            "id": task_id,
-            "cover": cover,
-            "name": f"merging pdf",
-            "percent": (step / 2) + 0.5,
-            "out": "",
-        }
-        eel.diplay_inividual_chapter_progresion(download_steps[th_id])
+    for book in dict_chunk(bookmarks, group):
+        OUT_FILE = os.path.join(
+            "out",
+            f"{manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf"
+        )
+        for step in pdfManip.mergeBookmarks(book, OUT_FILE):
+            if event.is_set():
+                del download_steps[th_id]
+                return
+            download_steps[th_id] = {
+                "th_id": th_id,
+                "id": task_id,
+                "cover": cover,
+                "name": f"merging pdf",
+                "percent": (step / 2) + 0.5,
+                "out": "",
+            }
+            eel.diplay_inividual_chapter_progresion(download_steps[th_id])
 
     download_steps[th_id] = {
         "th_id": th_id,
@@ -267,7 +265,7 @@ def download_chapters_th(event: threading.Event, chapters: list, manga_id, th_id
 
 
 @eel.expose
-def download_group(chapters, manga):
+def download_group(chapters: str, manga: str, group: int):
     global threads
     logger.info(
         f"threads: starting thread to download chapters {chapters} from {manga}"
@@ -277,7 +275,7 @@ def download_group(chapters, manga):
     th = threading.Thread(
         name=f"download_chapters_{manga}_{chapters[0]}_to_{chapters[-1:]}",
         target=download_chapters_th,
-        args=(e, chapters, manga, eid),
+        args=(e, chapters, manga, group, eid),
     )
     th.start()
     threads[eid] = (e, th)
