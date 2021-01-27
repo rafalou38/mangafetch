@@ -1,6 +1,7 @@
 var chapters = [];
 var open_manga = "";
 const split_regex = /(\d[\d\-]*)(?:\/)*$/;
+const split_regex2 = /(\d[\d\-]*.*?)(?:\/)$/;
 
 function download_group(chapters, manga) {
 	addNotification(".downloads-tab");
@@ -98,11 +99,11 @@ function check_selected(e) {
 	console.log(selected);
 	$(".download-selected").dataset.chapters = selected;
 	if (selected.length) {
-		$(".download-selected").removeAttribute("disabled")
+		$(".download-selected").removeAttribute("disabled");
 		$(".how-much-selected").style.display = "block";
 		$(".how-much-selected").innerHTML = selected.length + " selected";
 	} else {
-		$(".download-selected").setAttribute("disabled", "")
+		$(".download-selected").setAttribute("disabled", "");
 		$(".how-much-selected").style.display = "none";
 	}
 }
@@ -126,7 +127,15 @@ async function load_infos(manga) {
 
 	chapters = [];
 	for (const chapter of infos.chapters) {
-		let n = [split_regex.exec(chapter)[1], chapter];
+		let r = split_regex.exec(chapter);
+		let n = chapter;
+		if (r) {
+			n = [r[1], chapter];
+		} else {
+			r = split_regex2.exec(chapter);
+			n = [r[1], chapter];
+		}
+
 		chapters.push(n);
 		// console.log(chapters);
 	}
@@ -183,10 +192,10 @@ $(".bookmark").onclick = async (e) => {
 	// current = current ? parseInt(current.replaceAll('"', "")) : 0
 	// $(".bookmarks-tab").style.setProperty("--notif-text", `"${current + 1}"`)
 };
-$(".download-selected").addEventListener("click", e=>{
+$(".download-selected").addEventListener("click", (e) => {
 	console.log(e.currentTarget.dataset.chapters.split(","), open_manga);
-	download_group(e.currentTarget.dataset.chapters.split(","), open_manga)
-})
+	download_group(e.currentTarget.dataset.chapters.split(","), open_manga);
+});
 $("#start").onkeyup = update_chapters;
 $("#end").onkeyup = update_chapters;
 document
