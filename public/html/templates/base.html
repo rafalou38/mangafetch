@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-	<title>{% block title %}Manga Fetch{% endblock %}</title>
-	<script type="text/javascript" src="/eel.js"></script>
-	<link rel="stylesheet" href="/vendor/material-components-web.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
-	<link href="/vendor/icon.css" rel="stylesheet" />
-	<link
-		href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons|Google+Material+Icons"
-		rel="stylesheet" /> {% block scripts %} {% endblock %} {% block styles %}
-	<link rel="stylesheet" href="/css/index.css" /> {% endblock %}
-</head>
-
-<body>
-	{% include "partials/_nav.html" %}
-	{% block content %} {% endblock %}
-	<script src="/vendor/material-components-web.min.js"></script>
-	<script src="/js/helpers.js"></script>
-	{% block end_scripts %}
+  <head>
+    <title>{% block title %}Manga Fetch{% endblock %}</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="/vendor/material-components-web.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+    <link href="/vendor/icon.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons|Google+Material+Icons"
+      rel="stylesheet"
+    />
+	{% block scripts %}
 	{% endblock %}
-</body>
 
+	{% block styles %}
+    <link rel="stylesheet" href="/css/index.css" />
+    {% endblock %}
+  </head>
+
+  <body>
+	{% include "partials/_nav.html" %}
+
+	{% block content %} {% endblock %}
+    <script src="/vendor/material-components-web.min.js"></script>
+	<script src="/js/helpers.js"></script>
+
+    {% block end_scripts %} {% endblock %}
+  </body>
 </html>
