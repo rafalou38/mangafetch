@@ -31,9 +31,6 @@ function diplay_inividual_chapter_progresion(info) {
 			<div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
 				<span class="mdc-linear-progress__bar-inner"></span>
 			</div>
-			<div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-				<span class="mdc-linear-progress__bar-inner"></span>
-			</div>
 		</div>
 		`;
 
@@ -49,7 +46,9 @@ function diplay_inividual_chapter_progresion(info) {
 		li.dataset.id = info.th_id;
 		li.dataset.outFile = info.out;
 	}
-
+	if (info.name == "finished"){
+		li.querySelector(".mdc-linear-progress__bar-inner").style.borderColor = "green"
+	}
 	li.querySelector(".mdc-linear-progress").mdc.progress = info.percent;
 }
 function reveal_file(e){

@@ -8,6 +8,7 @@ import pdfManip
 import api
 import eel
 from myLog import logger
+import functools
 
 logger.setLevel("DEBUG")
 logger.info("main: starting app")
@@ -131,59 +132,6 @@ def get_curent_downloads():
     return list(download_steps.values())
 
 
-def download_chapter_th(event: threading.Event, chapter, manga_id, th_id):
-    global download_steps
-    OUT_FILE = os.path.join("out", f"{manga_id} - {str(chapter)}.pdf")
-    info = api.scansmangas_xyz.get_info(manga_id)
-    cover = info["cover"]
-    manga_id = info["id"]
-    task_id = f"download_chapter_{chapter}_{manga_id}"
-    event.manga_task_id = task_id
-    files = []
-    pages, img_url = api.scansmangas_xyz.get_pages(chapter, manga_id)
-    for file in api.scansmangas_xyz.download_chapter(chapter, manga_id, pages):
-        if event.is_set():
-            del download_steps[task_id]
-            return
-        download_steps[task_id] = {
-            "th_id": th_id,
-            "id": f"chapter {chapter} {manga_id}",
-            "cover": cover,
-            "name": "downloading",
-            "percent": int(os.path.splitext(os.path.split(file)[1])[0])
-                       / len(pages)
-            / 2,
-            "out": "",
-        }
-        eel.diplay_inividual_chapter_progresion(download_steps[task_id])
-
-        files.append(file)
-
-    for step in pdfManip.merge(files, OUT_FILE):
-        if event.is_set():
-            del download_steps[task_id]
-            return
-        download_steps[task_id] = {
-            "th_id": th_id,
-            "id": f"chapter {chapter} {manga_id}",
-            "cover": cover,
-            "name": f"merging pdf {manga_id} chapter {chapter}",
-            "percent": (step / 2) + 0.5,
-            "out": "",
-        }
-        eel.diplay_inividual_chapter_progresion(download_steps[task_id])
-        download_steps[task_id] = {
-            "id": f"chapter {chapter} {manga_id}",
-            "cover": cover,
-            "name": f"finished",
-            "percent": 1,
-            "out": OUT_FILE,
-        }
-    eel.diplay_inividual_chapter_progresion(download_steps[task_id])
-
-    # del download_steps[task_id]
-
-
 def download_chapters_th(
     event: threading.Event, chapters: list, manga_id: str, group: int, th_id
 ):
@@ -221,8 +169,9 @@ def download_chapters_th(
         bookmarks[chapter] = []
         pages, img_url = all_pages[chapter]
         logger.debug(f"download: chapter {chapter}")
-        for file in api.scansmangas_xyz.download_chapter(chapter, manga_id, pages, img_url):
-            c_page += 1
+        for file in api.scansmangas_xyz.download_chapter(
+            chapter, manga_id, pages, img_url
+        ):
             logger.debug(f"download: page {c_page}/{pages_cnt}")
             if event.is_set():
                 del download_steps[th_id]
@@ -237,14 +186,19 @@ def download_chapters_th(
                 "out": "",
             }
             eel.diplay_inividual_chapter_progresion(download_steps[th_id])
+            c_page += 1
 
     logger.debug("download: merging pdf")
-    for book in dict_chunk(bookmarks, group):
+    ch = dict_chunk(bookmarks, group)
+    total = functools.reduce(lambda a, x: [*a, *x], bookmarks.values())
+    ci = 0
+    for book in ch:
         OUT_FILE = os.path.join(
             "out",
-            f"{manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf"
+            f"{manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf",
         )
         for step in pdfManip.mergeBookmarks(book, OUT_FILE):
+            ci += 1
             if event.is_set():
                 del download_steps[th_id]
                 return
@@ -253,7 +207,7 @@ def download_chapters_th(
                 "id": task_id,
                 "cover": cover,
                 "name": f"merging pdf",
-                "percent": (step / 2) + 0.5,
+                "percent": min(((ci / len(total)) / 2) + 0.5, 0.9),
                 "out": "",
             }
             eel.diplay_inividual_chapter_progresion(download_steps[th_id])
@@ -270,7 +224,6 @@ def download_chapters_th(
     logger.info(
         f"download: finished download of {chapters} from {manga_id} in thread {th_id}"
     )
-    # del download_steps[task_id]
 
 
 @eel.expose
@@ -285,23 +238,6 @@ def download_group(chapters: str, manga: str, group: int):
         name=f"download_chapters_{manga}_{chapters[0]}_to_{chapters[-1:]}",
         target=download_chapters_th,
         args=(e, chapters, manga, group, eid),
-    )
-    th.start()
-    threads[eid] = (e, th)
-
-
-@eel.expose
-def download_chapter(chapter, manga_id):
-    global threads
-    logger.info(
-        f"threads: starting thread to download chapter {chapter} from {manga_id}"
-    )
-    e = threading.Event()
-    eid = id(e)
-    th = threading.Thread(
-        name=f"download_chapter_{chapter}_{manga_id}",
-        target=download_chapter_th,
-        args=(e, chapter, manga_id, eid),
     )
     th.start()
     threads[eid] = (e, th)

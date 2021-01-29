@@ -7,27 +7,19 @@ function download_group(ichapters, manga, group) {
   addNotification(".downloads-tab");
   eel.download_group(ichapters, manga, group);
 }
-function download_chapter(uri) {
-  const regex = /-([^\d]+)-(\d)+/;
-  const r = regex.exec(uri);
-  const id = r[1];
-  const chapter = r[2];
-
+function download_chapter(chapter, manga) {
   addNotification(".downloads-tab");
 
-  eel.download_chapter(chapter, id);
+  eel.download_group([chapter], open_manga, 1);
 }
 function update_table(chapters_list) {
   let table = $(".mdc-data-table__content");
   table.parentNode.parentNode.mdc.destroy();
   table.innerHTML = "";
   chapters_list.forEach((elem) => {
-    // console.log(elem);
-    let e = elem[0];
-    let url = elem[1];
     let row = table.insertRow();
     row.classList.add("mdc-data-table__row");
-    row.dataset["rowId"] = e;
+    row.dataset["rowId"] = elem.number;
     row.innerHTML = `
 			<td class="mdc-data-table__cell mdc-data-table__cell--checkbox">
 				<div class="mdc-checkbox mdc-data-table__row-checkbox">
@@ -51,12 +43,18 @@ function update_table(chapters_list) {
 			</td>
 			<td
 				class="mdc-data-table__cell"
-				data-column-id="chapitre"
+				data-column-id="numero"
 			>
-				${e}
+				${elem.number}
+			</td>
+			<td
+				class="mdc-data-table__cell"
+				data-column-id="infos_plus"
+			>
+				${elem.name}
 			</td>
 			<td class="mdc-data-table__cell">
-				<button class="mdc-button mdc-button--raised" onClick="download_chapter('${url}')">
+				<button class="mdc-button mdc-button--raised" onClick="download_chapter('${elem.number}', open_manga)">
 					<div class="mdc-button__ripple"></div>
 					<i
 						class="material-icons mdc-button__icon"
@@ -68,7 +66,7 @@ function update_table(chapters_list) {
 			</td>
 			<td class="mdc-data-table__cell">
 
-					<button class="mdc-button mdc-button--raised" onClick="window.open('${url}',width=7000,height=8000)">
+					<button class="mdc-button mdc-button--raised" onClick="window.open('${elem.url}',width=7000,height=8000)">
 						<div class="mdc-button__ripple"></div>
 						<i
 							class="material-icons mdc-button__icon"
@@ -122,21 +120,7 @@ async function load_infos(manga) {
   }
   open_manga = manga.id;
 
-  chapters = [];
-  for (const chapter of infos.chapters) {
-    let r = split_regex.exec(chapter);
-    let n;
-    if (r) {
-      n = [r[1], chapter];
-    } else {
-      r = split_regex2.exec(chapter);
-      n = [r[1], chapter];
-    }
-
-    chapters.push(n);
-    // console.log(chapters);
-  }
-  update_table(chapters);
+  update_table(infos.chapters);
 
   const details = $$("small.content");
   details[0].innerHTML = infos.author;

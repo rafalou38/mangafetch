@@ -99,7 +99,7 @@
 }
 .details .content .mdc-data-table {
   width: 100%;
-  max-width: 570px;
+  max-width: max-content;
   min-width: 330px;
   margin: 0 auto;
   display: block;
