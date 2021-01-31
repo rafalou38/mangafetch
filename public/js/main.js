@@ -134,30 +134,45 @@ function animate_details() {
 function add_results(results) {
 	// console.log("adding results");
 	const container = $(".search-results");
+	let list = false
+	if(results && !results[0].image){
+		container.style.display = "block"
+		list = true;
+	}
 	for (const result of results) {
-		let card = document.createElement("div");
-		card.innerHTML = /*html*/ `
-			<div class="my-card__media mdc-card__media mdc-card__media" style='background-image: url("${result.image}")'>
-			</div>
-			<div class="mdc-card__content">
-				<h6 class="mdc-typography--headline6">${result.name}</h6>
-				<div class="review">
-					<div class="material-icons star">star</div
-					><div class="material-icons star">star</div
-					><div class="material-icons star">star</div
-					><div class="material-icons star">star</div
-					><div class="material-icons star">star</div>
-					<span class="note mdc-typography">${result.stars}</span>
-				</div>
-			</div>
-			`;
 
-		if (!result.stars) {
-			card.querySelector(".review").remove();
+		let card = document.createElement("li");
+		if (!list){
+			card.innerHTML = /*html*/ `
+				<div class="my-card__media mdc-card__media mdc-card__media" style='background-image: url("${result.image}")'>
+				</div>
+				<div class="mdc-card__content">
+					<h6 class="mdc-typography--headline6">${result.name}</h6>
+					<div class="review">
+						<div class="material-icons star">star</div
+						><div class="material-icons star">star</div
+						><div class="material-icons star">star</div
+						><div class="material-icons star">star</div
+						><div class="material-icons star">star</div>
+						<span class="note mdc-typography">${result.stars}</span>
+					</div>
+				</div>
+				`;
+
+			if (!result.stars) {
+				card.querySelector(".review").remove();
+			}
+			card.classList.add("mdc-card");
+			card.classList.add("mdc-card--outlined");
+			card.classList.add("mdc-ripple-surface");
+		}else{
+			card.innerHTML = /*html*/ `
+			  <span class="mdc-list-item__ripple"></span>
+			  <span class="mdc-list-item__text">${result.name}</span>
+			`
+			card.classList.add("mdc-list-item");
+			card.classList.add("mdc-ripple-surface");
 		}
-		card.classList.add("mdc-card");
-		card.classList.add("mdc-card--outlined");
-		card.classList.add("mdc-ripple-surface");
 		container.appendChild(card);
 		init.ripple(card)
 		card.dataset.info = JSON.stringify(result);

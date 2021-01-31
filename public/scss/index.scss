@@ -77,6 +77,8 @@ body {
 .search-results {
 	display: flex;
 	flex-wrap: wrap;
+	margin: 0;
+	padding-inline-start: 0;
 }
 .load {
 	position: absolute;
@@ -100,7 +102,7 @@ body {
 	padding: 6px;
 	border-radius: 200px;
 	font-family: Roboto;
-	font-size: 12px; 
+	font-size: 12px;
 	position: absolute;
 	right: 0;
 
