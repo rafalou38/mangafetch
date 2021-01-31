@@ -279,25 +279,14 @@ class downloader(threading.Thread):
 @eel.expose
 def get_current_downloads():
     logger.info("main: loaded downloads")
-    # return list(download_steps.values())
     return [e.status for e in downloader.get_all()]
 
 
 @eel.expose
 def download_group(chapters: list, manga: str, group: int):
-    # global threads
     logger.info(
         f"threads: starting thread to download chapters {chapters} from {manga}"
     )
-    # e = threading.Event()
-    # eid = id(e)
-    # th = threading.Thread(
-    #     name=f"download_chapters_{manga}_{chapters[0]}_to_{chapters[-1:]}",
-    #     target=download_chapters_th,
-    #     args=(e, chapters, manga, group, eid),
-    # )
-    # th.start()
-    # threads[eid] = (e, th)
     th = downloader(chapters, manga, group, api.scansmangas_xyz)
     th.start()
 
@@ -323,14 +312,5 @@ def reveal_file(path):
         subprocess.Popen(["xdg-open", path])
 
 
-# download_group(
-#     list(map(str, range(80, 91))),
-#     "the-promised-neverland",
-# )
-# download_group(
-#     list(map(str, range(91, 100))),
-#     "the-promised-neverland",
-# )
-# input()
 eel.init("public")
 eel.start("html/index.html", cmdline_args=["--incognito"], jinja_templates="html")
