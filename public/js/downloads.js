@@ -56,7 +56,7 @@ function reveal_file(e){
 		eel.reveal_file(e.currentTarget.dataset.outFile)
 }
 async function load_all() {
-	let all = await eel.get_curent_downloads()()
+	let all = await eel.get_current_downloads()()
 	all.forEach((e)=>{
 		diplay_inividual_chapter_progresion(e)
 	})
