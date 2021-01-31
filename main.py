@@ -10,7 +10,10 @@ import pdfManip
 import api
 import eel
 from myLog import logger
-import functools
+
+import os, sys
+
+sys.path.insert(0, os.getcwd())
 
 logger.setLevel("DEBUG")
 logger.info("main: starting app")
@@ -39,6 +42,8 @@ pretty_errors.replace_stderr()
 
 OUT_PATH = "out"
 
+current_api = api.scansmangas_xyz
+
 
 def dict_chunk(in_dict, group):
     f = []
@@ -57,14 +62,14 @@ def dict_chunk(in_dict, group):
 @eel.expose
 def search(query="", page=1):
     logger.info('api: searched "' + query + '"')
-    result, pages = api.scansmangas_xyz.search(query, page)
+    result, pages = current_api.search(query, page)
     return result, pages
 
 
 @eel.expose
 def get_info(id):
     logger.info('api: got info for manga "' + id + '"')
-    return api.scansmangas_xyz.get_info(id)
+    return current_api.get_info(id)
 
 
 # ==> FAVORITES
@@ -90,7 +95,7 @@ def get_favorites_id():
 def add_to_favorites(manga):
     favorites = save.get("favorites")
     logger.info('save: adding to favorites"' + manga["id"] + '"')
-    if api.scansmangas_xyz.is_id_valid(manga["id"]):
+    if current_api.is_id_valid(manga["id"]):
         if favorites:
             if manga not in favorites:
                 favorites.append(manga)
@@ -287,7 +292,7 @@ def download_group(chapters: list, manga: str, group: int):
     logger.info(
         f"threads: starting thread to download chapters {chapters} from {manga}"
     )
-    th = downloader(chapters, manga, group, api.scansmangas_xyz)
+    th = downloader(chapters, manga, group, current_api)
     th.start()
 
 
