@@ -1,4 +1,5 @@
 import time
+from tempfile import TemporaryDirectory
 
 from bs4 import BeautifulSoup
 import urllib
@@ -14,7 +15,8 @@ from urllib3.exceptions import ProtocolError
 
 from myLog import logger
 
-TMP_PATH = "tmp"
+tmp_dir = TemporaryDirectory()
+TMP_PATH = tmp_dir.name
 IMG_PATH = os.path.join(TMP_PATH, "images")
 OUT_PATH = "out/"
 PDF_PATH = os.path.join(TMP_PATH, "pdfs")
