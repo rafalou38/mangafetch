@@ -6,7 +6,14 @@ body {
 .mdc-top-app-bar {
 	position: sticky;
 	top: 0;
-	.mdc-text-field {
+	&__row{
+		flex-wrap: wrap;
+		height: max-content !important;
+	}
+	&__section{
+		flex-wrap: wrap;
+	}
+	.mdc-text-field, .mdc-select {
 		margin-right: 10px;
 	}
 }

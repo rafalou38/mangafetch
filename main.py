@@ -71,6 +71,21 @@ def get_info(id):
     logger.info('api: got info for manga "' + id + '"')
     return current_api.get_info(id)
 
+# ==> SOURCES
+
+@eel.expose
+def get_sources():
+	return list(api.sources.keys())
+
+@eel.expose
+def set_source(source):
+	global current_api
+
+	if source in api.sources:
+		current_api = api.sources[source]
+		logger.info("api: source set to " + source)
+	else:
+		logger.warn("api: failed to find source "+ source)
 
 # ==> FAVORITES
 @eel.expose

@@ -158,7 +158,14 @@ body {
   position: sticky;
   top: 0;
 }
-.mdc-top-app-bar .mdc-text-field {
+.mdc-top-app-bar__row {
+  flex-wrap: wrap;
+  height: max-content !important;
+}
+.mdc-top-app-bar__section {
+  flex-wrap: wrap;
+}
+.mdc-top-app-bar .mdc-text-field, .mdc-top-app-bar .mdc-select {
   margin-right: 10px;
 }
 

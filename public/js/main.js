@@ -138,6 +138,8 @@ function add_results(results) {
 	if(results && !results[0].image){
 		container.style.display = "block"
 		list = true;
+	}else{
+		container.style.display = "flex"
 	}
 	for (const result of results) {
 

@@ -1,5 +1,5 @@
 const init = {
-	dataTable: (_) => {
+	dataTable: _ => {
 		$$(".mdc-data-table").forEach((e) => {
 			e.mdc = mdc.dataTable.MDCDataTable.attachTo(e);
 		});
@@ -8,17 +8,17 @@ const init = {
 		if (e)
 			e.mdc = mdc.ripple.MDCRipple.attachTo(e);
 	},
-	textField: (_) => {
+	textField: _ => {
 		$$(".mdc-text-field").forEach((e) => {
 			e.mdc = mdc.textField.MDCTextField.attachTo(e);
 		});
 	},
-	button: (_) => {
+	button: _ => {
 		$$(".mdc-button").forEach((e) => {
 			e.mdc = mdc.ripple.MDCRipple.attachTo(e);
 		});
 	},
-	linearProgress: (_) => {
+	linearProgress: _ => {
 		$$(".mdc-linear-progress").forEach((e) => {
 			e.mdc = mdc.linearProgress.MDCLinearProgress.attachTo(e);
 		});
@@ -26,6 +26,13 @@ const init = {
 			e.mdc.determinate = false;
 		});
 	},
+	select: _ => {
+
+		$$(".mdc-select").forEach((e) => {
+			if (e.mdc) e.mdc.destroy();
+			e.mdc = mdc.select.MDCSelect.attachTo(e);
+		});
+	}
 };
 
 function init_all() {
