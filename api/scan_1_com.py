@@ -20,6 +20,7 @@ class scan_1_com(website):
                     "image": None,
                     "stars": None,
                     "id": result["data"],
+                    "type": "manga"
                 }
             )
         return dict_results, 0
@@ -103,3 +104,20 @@ class scan_1_com(website):
             "note": float(note) * 2,
             "id": re.sub(r"^.+/([^/]+)/?$", r"\1", uri),
         }
+
+    @classmethod
+    def is_id_valid(cls, id):
+        url = f"https://wwv.scan-1.com/{id}/"
+        r = session.get(url)
+        return r.status_code == 200
+
+    @classmethod
+    def get_pages(cls, chapter, manga_id):
+
+        url = f"https://wwv.scan-1.com/{manga_id}/chapitre-{chapter}"
+        r = session.get(url)
+        soup = BeautifulSoup(r.text, features="lxml")
+        pages = soup.select("#all>img")
+        pages = list(map(lambda e: e["data-src"].strip(), pages))
+
+        return pages
