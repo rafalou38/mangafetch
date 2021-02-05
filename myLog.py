@@ -33,3 +33,6 @@ logger.addFilter(title_formatter)
 
 def get_logger():
     return logger
+
+
+logger.setLevel("DEBUG")
