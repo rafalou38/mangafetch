@@ -15,7 +15,6 @@ import os, sys
 
 sys.path.insert(0, os.getcwd())
 
-logger.setLevel("DEBUG")
 logger.info("main: starting app")
 
 save = MagicSave(dev=True)
@@ -42,8 +41,8 @@ pretty_errors.replace_stderr()
 
 OUT_PATH = "out"
 
+# current_api = api.sources[list(api.sources.keys())[0]]
 current_api = api.scansmangas_xyz
-
 
 def dict_chunk(in_dict, group):
     f = []
@@ -235,7 +234,7 @@ class downloader(threading.Thread):
         self._set_status("finished", 1, OUT_PATH)
         logger.info(f"download: finished " + self.task_id)
 
-        self._remove()
+        # self._remove()
 
     def _get_pages(self):
 
@@ -247,9 +246,9 @@ class downloader(threading.Thread):
             if not self._running:  # check if the thread is stopped
                 self._remove()
                 return
-            cu_pages, img_url = self.api.get_pages(chapter, self.manga_id)
+            cu_pages = self.api.get_pages(chapter, self.manga_id)
             pages_cnt += len(cu_pages)
-            all_pages[chapter] = [cu_pages, img_url]
+            all_pages[chapter] = cu_pages
         return pages_cnt, all_pages
 
     def _download_pages(self):
@@ -257,10 +256,10 @@ class downloader(threading.Thread):
         c_page = 0
         for chapter in self.chapters:
             self._bookmarks[chapter] = []
-            pages, img_url = self._pages[chapter]
+            pages = self._pages[chapter]
             logger.debug(f"download: chapter {chapter}")
             for file in self.api.download_chapter(
-                chapter, self.manga_id, pages, img_url
+                chapter, self.manga_id, pages
             ):
                 if not self._running:  # check if the thread is stopped
                     self._remove()
