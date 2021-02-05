@@ -1,7 +1,8 @@
 {% extends 'templates/base.html' %}
 
 {% block styles %}
- <link rel="stylesheet" href="/css/index.css" />
+<link href="/css/index.css" rel="stylesheet"/>
+<link href="/css/downloads.css" rel="stylesheet"/>
 {% endblock styles %}
 
 
@@ -9,9 +10,13 @@
 
 {% include "partials/_infos.html" %}
 <div class="cover"></div>
+<div class="display-mode-btn">
+    <button class="mdc-icon-button material-icons view_mode_grid">view_module</button>
+    <button class="mdc-icon-button material-icons view_mode_list">view_list</button>
+</div>
 <ul class="search-results mdc-list"></ul>
 <div class="expand_more">
-  <button class="material-icons mdc-icon-button" aria-label="Search">expand_more</button>
+    <button aria-label="Search" class="material-icons mdc-icon-button">expand_more</button>
 </div>
 {% endblock content %}
 

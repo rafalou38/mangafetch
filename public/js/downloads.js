@@ -5,7 +5,7 @@ var downloads = {};
 function diplay_inividual_chapter_progresion(info) {
 	// f.push(info)
 	// console.log(JSON.stringify(f));
-	if (document.URL.indexOf("download") == -1) return;
+	if (document.URL.indexOf("download") === -1) return;
 	if (!downloads[info.th_id]) {
 		var li = document.createElement("li");
 		downloads[info.th_id] = li;
@@ -13,7 +13,7 @@ function diplay_inividual_chapter_progresion(info) {
 		li.classList.add("list_item");
 		li.dataset.id = info.th_id;
 		li.dataset.outFile = info.out;
-		li.addEventListener("click", reveal_file)
+		li.addEventListener("click", reveal_file);
 		li.innerHTML = /*html*/ `
 		<div class="body">
 			<img class="avatar" src="${info.cover}">
@@ -35,7 +35,7 @@ function diplay_inividual_chapter_progresion(info) {
 		`;
 
 		downloads[info.th_id] = li;
-		$("ul").appendChild(li);
+		$(".download-list").appendChild(li);
 
 		init.linearProgress();
 	} else {
@@ -46,26 +46,22 @@ function diplay_inividual_chapter_progresion(info) {
 		li.dataset.id = info.th_id;
 		li.dataset.outFile = info.out;
 	}
-	if (info.name == "finished"){
-		li.querySelector(".mdc-linear-progress__bar-inner").style.borderColor = "green"
+	if (info.name === "finished") {
+		li.querySelector(".mdc-linear-progress__bar-inner").style.borderColor = "green";
 	}
 	li.querySelector(".mdc-linear-progress").mdc.progress = info.percent;
 }
-function reveal_file(e){
-	if (e.target.nodeName != "BUTTON")
-		eel.reveal_file(e.currentTarget.dataset.outFile)
+function reveal_file(e) {
+	if (e.target.nodeName !== "BUTTON") eel.reveal_file(e.currentTarget.dataset.outFile);
 }
 async function load_all() {
-	let all = await eel.get_current_downloads()()
-	all.forEach((e)=>{
-		diplay_inividual_chapter_progresion(e)
-	})
+	let all = await eel.get_current_downloads()();
+	all.forEach((e) => {
+		diplay_inividual_chapter_progresion(e);
+	});
 }
 async function stop_download(e) {
 	eel.stop_download(e);
 	$(`[data-id="${e}"]`).remove();
 }
-// eel.download_chapter("a", "b");
-// eel.download_chapter(1, "hundred-demon-spectrum");
-// eel.download_chapter(0, "sweet-home");
-load_all()
+load_all();

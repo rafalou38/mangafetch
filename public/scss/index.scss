@@ -1,5 +1,12 @@
 @import "details";
 
+.display-mode-btn{
+	display: flex;
+	justify-content: center;
+	gap: 30px;
+	margin: 10px;
+}
+
 body {
 	margin: 0;
 }
@@ -86,6 +93,11 @@ body {
 	flex-wrap: wrap;
 	margin: 0;
 	padding-inline-start: 0;
+	.no-results{
+		text-align: center;
+		width: 100%;
+		color: gray;
+	}
 }
 .load {
 	position: absolute;

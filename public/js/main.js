@@ -1,38 +1,33 @@
-var last_anim;
-
+let last_anim;
+let list_mode = true;
+let results = [];
 
 function update_stars() {
 	$$(".review").forEach((e) => {
 		let stars = e.querySelectorAll(".star");
 		let rate = eval(e.querySelector(".note").innerText);
-		if(rate ){
+		if (rate) {
 			e.style.display = "flex";
 			rate = rate.map(0, 10, 0, 5);
 			let rounded = Math.floor(rate);
 			let rest = (rate - rounded) * 100;
 
 			for (var i = Math.floor(rate) + 1; i < stars.length; ++i) {
-				stars[i].style.backgroundImage =
-					"linear-gradient(90deg, gold -100%, gray -100%)";
+				stars[i].style.backgroundImage = "linear-gradient(90deg, gold -100%, gray -100%)";
 			}
 			for (var y = Math.floor(rate) - 1; y >= 0; --y) {
-				stars[y].style.backgroundImage =
-					"linear-gradient(90deg, gold 100%, gray -100%)";
+				stars[y].style.backgroundImage = "linear-gradient(90deg, gold 100%, gray -100%)";
 			}
 			let star = stars[rounded];
 			if (star) {
-				star.style.backgroundImage = `linear-gradient(90deg, gold ${rest.map(
-					0,
-					100,
-					20,
-					80
-				)}%, gray -100%)`;
+				star.style.backgroundImage = `linear-gradient(90deg, gold ${rest.map(0, 100, 20, 80)}%, gray -100%)`;
 			}
-		}else{
+		} else {
 			e.style.display = "none";
 		}
 	});
 }
+
 function show_details() {
 	load_infos(this);
 }
@@ -131,23 +126,39 @@ function animate_details() {
 }
 
 // eel.expose(add_results);
-function add_results(results) {
+function add_results(res) {
+	results = [...results, ...res];
+	clear_results();
+	update_results();
+}
+
+function update_results() {
 	// console.log("adding results");
 	const container = $(".search-results");
-	let list = false
-	if(results && !results[0].image){
-		container.style.display = "block"
-		list = true;
-	}else{
-		container.style.display = "flex"
+	let list = false;
+	if (result.length === 0) {
+		let no_results_tag = document.createElement("h4");
+		no_results_tag.classList.add("no-results");
+		no_results_tag.innerText = "No results found";
+		container.appendChild(no_results_tag);
+		$(".display-mode-btn").style.display = "none";
+	} else {
+		$(".display-mode-btn").style.display = "flex";
 	}
 	for (const result of results) {
+		result.image = result.image ? result.image : "/img/empty.png";
 
 		let card = document.createElement("li");
-		if (!list){
-			card.innerHTML = /*html*/ `
+		if (!list_mode) {
+			container.style.display = "flex";
+			card.innerHTML =
+				/*html*/ (result.image === "/img/empty.png"
+					? ""
+					: `
 				<div class="my-card__media mdc-card__media mdc-card__media" style='background-image: url("${result.image}")'>
 				</div>
+					`) +
+				`
 				<div class="mdc-card__content">
 					<h6 class="mdc-typography--headline6">${result.name}</h6>
 					<div class="review">
@@ -167,26 +178,46 @@ function add_results(results) {
 			card.classList.add("mdc-card");
 			card.classList.add("mdc-card--outlined");
 			card.classList.add("mdc-ripple-surface");
-		}else{
-			card.innerHTML = /*html*/ `
-			  <span class="mdc-list-item__ripple"></span>
-			  <span class="mdc-list-item__text">${result.name}</span>
-			`
-			card.classList.add("mdc-list-item");
-			card.classList.add("mdc-ripple-surface");
+		} else {
+			container.style.display = "block";
+
+			card.innerHTML = `
+					<li class="list_item" data-id="2832656628232" data-out-file="out">
+                        <div class="body">
+                            <img class="avatar" src="${result.image}">
+                            <div class="content">
+                                <p class="first_line">${result.name}</p>
+                                <p class="second_line">${result.type}</p>
+                            </div>
+
+                        </div>
+                    </li>
+				`;
+			card.classList.add("list_item");
 		}
 		container.appendChild(card);
-		init.ripple(card)
+		init.ripple(card);
 		card.dataset.info = JSON.stringify(result);
 		card.onclick = animate_details.bind(card);
 	}
 	update_stars();
 	return true;
 }
+
 function clear_results() {
 	const container = $(".search-results");
 	container.innerHTML = "";
 }
+
+$(".view_mode_grid").onclick = (_) => {
+	list_mode = false;
+	clear_results();
+	update_results();
+};
+$(".view_mode_list").onclick = (_) => {
+	list_mode = true;
+	clear_results();
+	update_results();
+};
 // search("fairy tail");
 // show_details();
-
