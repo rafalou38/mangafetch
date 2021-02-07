@@ -1,5 +1,6 @@
 var chapters = [];
 var open_manga = "";
+var curent_infos = {};
 const split_regex = /(\d[\d\-]*)(?:\/)*$/;
 const split_regex2 = /(\d[\d\-]*.*?)(?:\/)$/;
 
@@ -117,6 +118,8 @@ async function load_infos(manga) {
 	load.style.opacity = 1;
 
 	const infos = await eel.get_info(manga.id)();
+	curent_infos = infos
+
 	const favorites = await eel.get_favorites_id()();
 
 	const b = $(".bookmark");
@@ -170,7 +173,16 @@ function removeNotification(selector) {
 
 $(".bookmark").onclick = async (e) => {
 	const favorites = await eel.get_favorites_id()();
-	const manga = JSON.parse($(".bookmark").dataset.data);
+	const data = JSON.parse($(".bookmark").dataset.data);
+	const manga = {
+			"name": data.name || curent_infos.name,
+			"image": data.image == "/img/empty.png" ? curent_infos.cover : data.image,
+			"stars": data.stars || curent_infos.note,
+			"id": data.id || curent_infos.id,
+			"type": data.type || curent_infos.type,
+			"source": await eel.get_current_source()()
+		}
+
 	if (favorites && favorites.indexOf(manga.id) != -1) {
 		eel.remove_from_favorites(manga);
 		$(".bookmark").classList.remove("bookmarked");
@@ -183,6 +195,7 @@ $(".bookmark").onclick = async (e) => {
 	// current = $(".bookmarks-tab").style.getPropertyValue("--notif-text")
 	// current = current ? parseInt(current.replaceAll('"', "")) : 0
 	// $(".bookmarks-tab").style.setProperty("--notif-text", `"${current + 1}"`)
+	search_bookmarks && search_bookmarks()
 };
 $(".download-selected").addEventListener("click", (e) => {
 	console.log(e.currentTarget.dataset.chapters.split(","), open_manga);
