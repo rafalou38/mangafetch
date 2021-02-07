@@ -3,7 +3,7 @@ import subprocess
 
 from bs4 import BeautifulSoup
 
-from ._main import session, website, user_agent
+from . import Extractor
 from myLog import logger
 import json
 import urllib.request
@@ -39,7 +39,7 @@ def _get(url):
     return result
 
 
-class crunchyroll(website):
+class crunchyroll(Extractor):
     anime_list = []
     name = "crunchyroll.com"
 

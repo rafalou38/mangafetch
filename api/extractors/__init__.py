@@ -1,45 +1,13 @@
-import atexit
 import os
-from tempfile import TemporaryDirectory
 
-import requests
 from magic import magic
 
-from myLog import logger
-from urllib3.exceptions import ProtocolError
-
-tmp_dir = TemporaryDirectory()
-TMP_PATH = tmp_dir.name
-IMG_PATH = os.path.join(TMP_PATH, "images")
-OUT_PATH = "out/"
-PDF_PATH = os.path.join(TMP_PATH, "pdfs")
-
-user_agent = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0"
-)
-
-session = requests.session()
+from ..downloaders.manga import manga_downloader
 
 
-def _exit():
-    session.close()
-    logger.info("main: \033[31mclosing app")
-
-
-atexit.register(_exit)
-
-
-def init():
-    if not os.path.exists(IMG_PATH):
-        os.makedirs(IMG_PATH)
-    if not os.path.exists(PDF_PATH):
-        os.makedirs(PDF_PATH)
-    if not os.path.exists(OUT_PATH):
-        os.makedirs(OUT_PATH)
-
-
-class website:
+class Extractor:
     name = "website"
+    downloader = manga_downloader
 
     @classmethod
     def search(cls, query="", page=1):
@@ -63,6 +31,8 @@ class website:
 
     @classmethod
     def download_chapter(cls, chapter, manga_id, pages=None):
+        from .. import init, IMG_PATH, session, logger
+
         init()
         tries = 0
         if pages is None:

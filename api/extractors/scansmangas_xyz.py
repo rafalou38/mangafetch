@@ -1,23 +1,21 @@
-import json
+import os
 import os
 import re
 import urllib
 from re import compile as rc
 
-import magic
 from bs4 import BeautifulSoup
-from myLog import logger
-from urllib3.exceptions import ProtocolError
 
-from ._main import IMG_PATH, init, session, website
-from myLog import logger
+from . import Extractor
 
 
-class scansmangas_xyz(website):
+class scansmangas_xyz(Extractor):
     name = "scansmangas.xyz"
 
     @classmethod
     def search(cls, query="", page=1):
+        from .. import session
+
         uri = f"https://scansmangas.xyz/page/{page}/?s={urllib.parse.quote(query)}&post_type=manga"
 
         result = session.get(uri).text
@@ -42,6 +40,8 @@ class scansmangas_xyz(website):
 
     @classmethod
     def get_info(cls, id):
+        from .. import session
+
         uri = f"https://scansmangas.xyz/manga/{id}/"
 
         result = session.get(uri)
@@ -129,12 +129,15 @@ class scansmangas_xyz(website):
 
     @classmethod
     def is_id_valid(cls, id):
+        from .. import session
+
         url = f"https://scansmangas.xyz/manga/{id}/"
         r = session.get(url)
         return r.status_code == 200
 
     @classmethod
     def get_pages(cls, chapter, manga_id):
+        from .. import session
 
         url = f"https://scansmangas.xyz/scan-{manga_id}-{chapter}/"
         r = session.get(url)

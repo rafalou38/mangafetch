@@ -2,15 +2,18 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ._main import session, website
+
+from . import Extractor
 from myLog import logger
 
 
-class scan_1_com(website):
+class scan_1_com(Extractor):
     name = "scan-1.com"
 
     @classmethod
     def search(cls, query="", page=1):
+        from .. import session
+
         uri = f"https://wwv.scan-1.com/search?query={query}"
         response = session.get(uri).json()
 
@@ -29,6 +32,8 @@ class scan_1_com(website):
 
     @classmethod
     def get_info(cls, id):
+        from .. import session
+
         uri = f"https://wwv.scan-1.com/{id}/"
         bad_char_remove_regex = r"\s\s|\\[ntr]"
         result = session.get(uri)
@@ -109,12 +114,15 @@ class scan_1_com(website):
 
     @classmethod
     def is_id_valid(cls, id):
+        from .. import session
+
         url = f"https://wwv.scan-1.com/{id}/"
         r = session.get(url)
         return r.status_code == 200
 
     @classmethod
     def get_pages(cls, chapter, manga_id):
+        from .. import session
 
         url = f"https://wwv.scan-1.com/{manga_id}/chapitre-{chapter}"
         r = session.get(url)

@@ -45,20 +45,6 @@ OUT_PATH = "out"
 current_api = api.scansmangas_xyz
 
 
-def dict_chunk(in_dict, group):
-    f = []
-    d = {}
-    for i, obj in enumerate(in_dict.items()):
-        d[obj[0]] = obj[1]
-        if not (i + 1) % int(group):
-            f.append(d)
-            d = {}
-    else:
-        if d:
-            f.append(d)
-    return f
-
-
 @eel.expose
 def search(query="", page=1):
     logger.info('api: searched "' + query + '"')
@@ -157,164 +143,10 @@ def display_favorites(filter):
 # ==> DOWNLOAD
 
 
-class downloader(threading.Thread):
-    _current_downloads: List["downloader"] = []
-
-    def __init__(
-        self,
-        chapters: list,
-        manga_id: str,
-        group: int,
-        capi: Type[api.website] = api.scansmangas_xyz,
-    ):
-        super().__init__()
-        self.group = group
-        self.manga_id = manga_id
-        self.chapters = chapters
-        self.th_id = id(self)
-        self.chapters.sort()
-        self._running = True
-        self.api = capi
-
-        #  not yet set
-        self._info = {}
-        self.status = {}
-        self._bookmarks = {}
-        self._pages = {}
-        self._pages_count = 0
-
-        if len(self.chapters) != 1:
-            self.task_id = f"download {self.manga_id} chapters {self.chapters[0]} to {self.chapters[-1:][0]}"
-        else:
-            self.task_id = f"download {self.manga_id} chapter {self.chapters[0]}"
-
-    @classmethod
-    def get_all(cls) -> List["downloader"]:
-        return cls._current_downloads
-
-    @classmethod
-    def get_by_id(cls, th_id) -> "downloader":
-        for e in cls._current_downloads:
-            if e.th_id == int(th_id):
-                return e
-
-    def stop(self):
-        self._running = False
-
-    def _remove(self):
-        if self in self.__class__._current_downloads:
-            self.__class__._current_downloads.remove(self)
-
-    def _set_status(self, name="", percent=0.0, out=""):
-        self.status = {
-            "th_id": self.th_id,
-            "id": self.task_id,
-            "cover": self._info["cover"],
-            "name": name,
-            "percent": percent,
-            "out": out,
-        }
-        eel.diplay_inividual_chapter_progresion(self.status)
-
-    def run(self):
-        self.__class__._current_downloads.append(self)
-
-        logger.info(f"download: " + self.task_id)
-        self._info = self.api.get_info(self.manga_id)
-
-        if not self._running:  # check if the thread is stopped
-            self._remove()
-            return
-
-        logger.debug("download: getting pages")
-        self._pages_count, self._pages = self._get_pages()
-
-        if not self._running:  # check if the thread is stopped
-            self._remove()
-            return
-
-        logger.debug("download: downloading pages")
-        self._download_pages()
-
-        if not self._running:  # check if the thread is stopped
-            self._remove()
-            return
-
-        logger.debug("download: merging pdf")
-        self._merge_pages()
-
-        if not self._running:  # check if the thread is stopped
-            self._remove()
-            return
-
-        self._set_status("finished", 1, OUT_PATH)
-        logger.info(f"download: finished " + self.task_id)
-
-        # self._remove()
-
-    def _get_pages(self):
-
-        self._set_status("getting pages")
-
-        all_pages = {}
-        pages_cnt = 0
-        for chapter in self.chapters:  # get page's info for each chapter
-            if not self._running:  # check if the thread is stopped
-                self._remove()
-                return
-            cu_pages = self.api.get_pages(chapter, self.manga_id)
-            pages_cnt += len(cu_pages)
-            all_pages[chapter] = cu_pages
-        return pages_cnt, all_pages
-
-    def _download_pages(self):
-
-        c_page = 0
-        for chapter in self.chapters:
-            self._bookmarks[chapter] = []
-            pages = self._pages[chapter]
-            logger.debug(f"download: chapter {chapter}")
-            for file in self.api.download_chapter(chapter, self.manga_id, pages):
-                if not self._running:  # check if the thread is stopped
-                    self._remove()
-                    return
-                c_page += 1
-                logger.debug(f"download: page {c_page}/{self._pages_count}")
-                self._bookmarks[chapter].append(file)
-                self._set_status(
-                    "downloading chapter" + str(chapter), c_page / self._pages_count / 2
-                )
-
-    def _merge_pages(self):
-        ch = dict_chunk(self._bookmarks, self.group)
-        total = [
-            item for sublist in self._bookmarks.values() for item in sublist
-        ]  # flatten files lists
-        ci = 0
-        for book in ch:
-            if len(book.keys()) == 1:
-                filename = f"{self.manga_id} - {str(list(book.keys())[0])}.pdf"
-            else:
-                filename = f"{self.manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf"
-            OUT_FILE = os.path.join(
-                OUT_PATH,
-                filename,
-            )
-            for _ in pdfManip.mergeBookmarks(book, OUT_FILE):
-                if not self._running:  # check if the thread is stopped
-                    self._remove()
-                    return
-
-                ci += 1
-                self._set_status(
-                    f"merging pdf", min(((ci / len(total)) / 2) + 0.5, 0.9)
-                )
-
-
 @eel.expose
 def get_current_downloads():
     logger.info("main: loaded downloads")
-    return [e.status for e in downloader.get_all()]
+    return [e.status for e in current_api.downloader.get_all()]
 
 
 @eel.expose
@@ -322,13 +154,15 @@ def download_group(chapters: list, manga: str, group: int):
     logger.info(
         f"threads: starting thread to download chapters {chapters} from {manga}"
     )
-    th = downloader(chapters, manga, group, current_api)
+    th = current_api.downloader(
+        chapters, manga, group, current_api, eel.diplay_inividual_chapter_progresion
+    )
     th.start()
 
 
 @eel.expose
 def stop_download(th_id):
-    th = downloader.get_by_id(th_id)
+    th = current_api.downloader.get_by_id(th_id)
     if th:
         th.stop()
         logger.info(f"threads: stopped thread {th_id}")
