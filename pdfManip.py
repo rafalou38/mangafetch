@@ -19,7 +19,7 @@ stretch = parser.parse_args().stretch
 
 
 def _chunk(l, n):
-    return [l[i: i + n] for i in range(0, len(l), n)]
+    return [l[i : i + n] for i in range(0, len(l), n)]
 
 
 def mergeBookmarks(bookmarks: dict, out_file: str):

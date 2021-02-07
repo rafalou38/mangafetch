@@ -15,7 +15,7 @@ def tile(image_path):
             images = []
             y = 0
             for i in range(0, int(image.shape[0]), int(height)):
-                chunk = image[i: int(i + height)]
+                chunk = image[i : int(i + height)]
                 p = (
                     os.path.splitext(image_path)[0]
                     + " cut "
@@ -30,6 +30,7 @@ def tile(image_path):
             return [image_path]
     except:
         return [image_path]
+
 
 # tile("tmp\\images\\sweet-home\\0\\1.jpeg")
 # for image in tile("tmp\\images\\one-piece\\680\\1.jpeg"):

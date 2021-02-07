@@ -52,9 +52,9 @@ if __name__ == "__main__":
         lines_before=2,
         lines_after=2,
         line_color="═"
-                   + pretty_errors.RED
-                   + "❯ "
-                   + pretty_errors.default_config.line_color,
+        + pretty_errors.RED
+        + "❯ "
+        + pretty_errors.default_config.line_color,
         code_color="   " + pretty_errors.default_config.code_color,
         truncate_code=True,
         display_arrow=True,

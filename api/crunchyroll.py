@@ -14,7 +14,7 @@ import os
 
 def _chunks(lst, n):
     for i in range(0, len(lst), n):
-        yield lst[i: i + n]
+        yield lst[i : i + n]
 
 
 def _get(url):
@@ -53,8 +53,8 @@ class crunchyroll(website):
             response_text = _get(uri)
             response_text = (
                 response_text.decode("UTF-8")
-                    .replace("/*-secure-\n", "")
-                    .replace("\n*/", "")
+                .replace("/*-secure-\n", "")
+                .replace("\n*/", "")
             )
             cls.anime_list = json.loads(response_text)
         except Exception as e:
@@ -138,5 +138,6 @@ class crunchyroll(website):
             "note": float(note) * 2,
             "id": id,
         }
+
 
 # consolog.log(crunchyroll.search("one piece"))
