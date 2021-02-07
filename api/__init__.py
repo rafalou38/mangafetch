@@ -1,6 +1,6 @@
 import atexit
 import os
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, gettempdir
 
 import requests
 
@@ -12,8 +12,12 @@ from .extractors.crunchyroll import crunchyroll
 from .extractors.scan_1_com import scan_1_com
 from .extractors.scansmangas_xyz import scansmangas_xyz
 
-tmp_dir = TemporaryDirectory()
-TMP_PATH = tmp_dir.name
+tmp_root_dir = os.path.join(gettempdir(), "mangafetch")
+if not os.path.exists(tmp_root_dir):
+    os.makedirs(tmp_root_dir)
+temp_dir = TemporaryDirectory(dir=tmp_root_dir)
+
+TMP_PATH = temp_dir.name
 IMG_PATH = os.path.join(TMP_PATH, "images")
 OUT_PATH = os.path.abspath("out/")
 PDF_PATH = os.path.join(TMP_PATH, "pdfs")
