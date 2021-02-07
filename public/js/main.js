@@ -29,6 +29,10 @@ function update_stars() {
 }
 
 function show_details() {
+	if (this.source){
+		eel.set_source(this.source)
+		update_source()
+	}
 	load_infos(this);
 }
 
@@ -127,8 +131,8 @@ function animate_details() {
 
 // eel.expose(add_results);
 function add_results(res) {
-	results = [...results, ...res];
 	clear_results();
+	results = [...results, ...res];
 	update_results();
 }
 
