@@ -37,6 +37,8 @@ def init():
 
 
 class website:
+    name = "website"
+
     @classmethod
     def search(cls, query="", page=1):
         pass

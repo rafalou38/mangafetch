@@ -14,6 +14,7 @@ from myLog import logger
 
 
 class scansmangas_xyz(website):
+    name = "scansmangas.xyz"
     @classmethod
     def search(cls, query="", page=1):
         uri = f"https://scansmangas.xyz/page/{page}/?s={urllib.parse.quote(query)}&post_type=manga"

@@ -70,21 +70,28 @@ def get_info(id):
     logger.info('api: got info for manga "' + id + '"')
     return current_api.get_info(id)
 
+
 # ==> SOURCES
 
 @eel.expose
 def get_sources():
-	return list(api.sources.keys())
+    return list(api.sources.keys())
+
+
+@eel.expose
+def get_current_source():
+    return current_api.name
+
 
 @eel.expose
 def set_source(source):
-	global current_api
+    global current_api
 
-	if source in api.sources:
-		current_api = api.sources[source]
-		logger.info("api: source set to " + source)
-	else:
-		logger.warn("api: failed to find source "+ source)
+    if source in api.sources:
+        current_api = api.sources[source]
+        logger.info("api: source set to " + source)
+    else:
+        logger.warn("api: failed to find source " + source)
 
 # ==> FAVORITES
 @eel.expose
@@ -332,4 +339,9 @@ def reveal_file(path):
 
 
 eel.init("public")
-eel.start("html/index.html", cmdline_args=["--incognito"], jinja_templates="html")
+eel.start(
+    "html/index.html",
+    cmdline_args=["--incognito"],
+    jinja_templates="html",
+    mode="auto",
+)

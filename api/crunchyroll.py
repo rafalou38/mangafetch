@@ -36,7 +36,7 @@ def _get(url):
 
 class crunchyroll(website):
     anime_list = []
-
+    name = "crunchyroll.com"
     @classmethod
     def _init_anime_list(cls):
         try:
