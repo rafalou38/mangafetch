@@ -44,6 +44,7 @@ OUT_PATH = "out"
 # current_api = api.sources[list(api.sources.keys())[0]]
 current_api = api.scansmangas_xyz
 
+
 def dict_chunk(in_dict, group):
     f = []
     d = {}
@@ -73,6 +74,7 @@ def get_info(id):
 
 # ==> SOURCES
 
+
 @eel.expose
 def get_sources():
     return list(api.sources.keys())
@@ -92,6 +94,7 @@ def set_source(source):
         logger.info("api: source set to " + source)
     else:
         logger.warn("api: failed to find source " + source)
+
 
 # ==> FAVORITES
 @eel.expose
@@ -157,7 +160,13 @@ def display_favorites(filter):
 class downloader(threading.Thread):
     _current_downloads: List["downloader"] = []
 
-    def __init__(self, chapters: list, manga_id: str, group: int, capi: Type[api.website] = api.scansmangas_xyz):
+    def __init__(
+        self,
+        chapters: list,
+        manga_id: str,
+        group: int,
+        capi: Type[api.website] = api.scansmangas_xyz,
+    ):
         super().__init__()
         self.group = group
         self.manga_id = manga_id
@@ -265,9 +274,7 @@ class downloader(threading.Thread):
             self._bookmarks[chapter] = []
             pages = self._pages[chapter]
             logger.debug(f"download: chapter {chapter}")
-            for file in self.api.download_chapter(
-                chapter, self.manga_id, pages
-            ):
+            for file in self.api.download_chapter(chapter, self.manga_id, pages):
                 if not self._running:  # check if the thread is stopped
                     self._remove()
                     return
@@ -299,7 +306,9 @@ class downloader(threading.Thread):
                     return
 
                 ci += 1
-                self._set_status(f"merging pdf", min(((ci / len(total)) / 2) + 0.5, 0.9))
+                self._set_status(
+                    f"merging pdf", min(((ci / len(total)) / 2) + 0.5, 0.9)
+                )
 
 
 @eel.expose

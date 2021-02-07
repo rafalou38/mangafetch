@@ -16,7 +16,7 @@ manga fetch is an material design app to download mangas from different sites
 
 ![main view](images/search.png)
 
---------------------------------
+---
 
 ### info view
 
@@ -24,7 +24,7 @@ manga fetch is an material design app to download mangas from different sites
 
 here you can get info about the manga or bookmark is so it also apears in the bookmarks view
 
---------------------------------
+---
 
 ### table
 
@@ -35,4 +35,4 @@ You can also limit the displayed chapters
 
 the group option is for how much chapters you want to put on each pdf.
 
---------------------------------
+---

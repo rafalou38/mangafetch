@@ -14,17 +14,22 @@ import os
 
 def _chunks(lst, n):
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i: i + n]
 
 
 def _get(url):
     request = urllib.request.Request(url)
 
-    request.add_header('User-Agent', "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0")
-    request.add_header('Accept',
-                       'application/atom+xml,application/rdf+xml,application/rss+xml,application/x-netcdf,'
-                       'application/xml;q=0.9,text/xml;q=0.2,*/*;q=0.1')
-    request.add_header('Accept-encoding', 'gzip, deflate')
+    request.add_header(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0",
+    )
+    request.add_header(
+        "Accept",
+        "application/atom+xml,application/rdf+xml,application/rss+xml,application/x-netcdf,"
+        "application/xml;q=0.9,text/xml;q=0.2,*/*;q=0.1",
+    )
+    request.add_header("Accept-encoding", "gzip, deflate")
 
     opener = urllib.request.build_opener()
     with opener.open(request) as got_file:
@@ -37,13 +42,20 @@ def _get(url):
 class crunchyroll(website):
     anime_list = []
     name = "crunchyroll.com"
+
     @classmethod
     def _init_anime_list(cls):
         try:
             logger.info("api: downloading crunchyroll series list")
-            uri = "https://www.crunchyroll.com/ajax/?req=RpcApiSearch_GetSearchCandidates"
+            uri = (
+                "https://www.crunchyroll.com/ajax/?req=RpcApiSearch_GetSearchCandidates"
+            )
             response_text = _get(uri)
-            response_text = response_text.decode("UTF-8").replace("/*-secure-\n", "").replace("\n*/", "")
+            response_text = (
+                response_text.decode("UTF-8")
+                    .replace("/*-secure-\n", "")
+                    .replace("\n*/", "")
+            )
             cls.anime_list = json.loads(response_text)
         except Exception as e:
             logger.error("api: failed to get anime list for crunchyroll: " + repr(e))
@@ -66,7 +78,7 @@ class crunchyroll(website):
                         "image": e["img"].replace("small", "large"),
                         "stars": None,
                         "id": e["link"].replace("/", ""),
-                        "type": e["type"]
+                        "type": e["type"],
                     }
                 )
         if len(dict_results) > 30:
@@ -88,7 +100,9 @@ class crunchyroll(website):
 
         edition = soup.find("span", text="Éditeur").findNext().text
 
-        genres = list(map(lambda e: e.text, soup.select(".large-margin-bottom>ul>li>a")))
+        genres = list(
+            map(lambda e: e.text, soup.select(".large-margin-bottom>ul>li>a"))
+        )
 
         id = soup.select_one('input[name="from"]')["value"]
         # try:

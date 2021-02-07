@@ -1,133 +1,132 @@
 @import "details";
 
-.display-mode-btn{
-	display: flex;
-	justify-content: center;
-	gap: 30px;
-	margin: 10px;
+.display-mode-btn {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 10px;
 }
 
 body {
-	margin: 0;
+  margin: 0;
 }
 .mdc-top-app-bar {
-	position: sticky;
-	top: 0;
-	&__row{
-		flex-wrap: wrap;
-		height: max-content !important;
-	}
-	&__section{
-		flex-wrap: wrap;
-	}
-	.mdc-text-field, .mdc-select {
-		margin-right: 10px;
-	}
+  position: sticky;
+  top: 0;
+  &__row {
+    flex-wrap: wrap;
+    height: max-content !important;
+  }
+  &__section {
+    flex-wrap: wrap;
+  }
+  .mdc-text-field,
+  .mdc-select {
+    margin-right: 10px;
+  }
 }
 .material-icons {
-	user-select: none;
+  user-select: none;
 }
 
 .expand_more {
-	display: none;
-	place-items: center;
-	padding: 20px;
+  display: none;
+  place-items: center;
+  padding: 20px;
 }
 .mdc-card {
-	margin: 10px;
-	transition: all 0.3s;
-	// height: min-content;
-	backface-visibility: hidden;
-	width: 200px;
-	// background-image: url("https://scansmangas.xyz/wp-content/uploads/2020/12/Solo-Spell-Caster.jpg");
+  margin: 10px;
+  transition: all 0.3s;
+  // height: min-content;
+  backface-visibility: hidden;
+  width: 200px;
+  // background-image: url("https://scansmangas.xyz/wp-content/uploads/2020/12/Solo-Spell-Caster.jpg");
 
-	&__media {
-		// margin: auto;
-		// margin-top: 3px;
-		background-image: url("https://scansmangas.xyz/wp-content/uploads/2020/12/Solo-Spell-Caster.jpg");
-		height: 300px;
-		image-rendering: -webkit-optimize-contrast;
-		// width: 200px;
-	}
-	&__content {
-		padding: 16px;
-		height: min-content;
-		h6 {
-			margin: 0;
-		}
-	}
-	&:hover {
-		box-shadow: 0px 5px 14px -1px rgba(0, 0, 0, 0.75);
-		transform: translateY(-10px);
-	}
+  &__media {
+    // margin: auto;
+    // margin-top: 3px;
+    background-image: url("https://scansmangas.xyz/wp-content/uploads/2020/12/Solo-Spell-Caster.jpg");
+    height: 300px;
+    image-rendering: -webkit-optimize-contrast;
+    // width: 200px;
+  }
+  &__content {
+    padding: 16px;
+    height: min-content;
+    h6 {
+      margin: 0;
+    }
+  }
+  &:hover {
+    box-shadow: 0px 5px 14px -1px rgba(0, 0, 0, 0.75);
+    transform: translateY(-10px);
+  }
 }
 .review {
-	display: flex;
-	align-items: center;
-	&.active_manga_review {
-		width: 190px;
-		margin: 5px auto 20px;
-		padding: 15px;
-		border: 1px solid #bdbdbd;
-		border-radius: 20px;
-	}
-	.star {
-		-webkit-background-clip: text;
-		-moz-background-clip: text;
-		background-clip: text;
+  display: flex;
+  align-items: center;
+  &.active_manga_review {
+    width: 190px;
+    margin: 5px auto 20px;
+    padding: 15px;
+    border: 1px solid #bdbdbd;
+    border-radius: 20px;
+  }
+  .star {
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
 
-		-webkit-text-fill-color: transparent;
-		-moz-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
 
-		background-image: linear-gradient(90deg, gold 100%, gray -100%);
-	}
-	.note {
-		margin-left: auto;
-		font-weight: 500;
-		opacity: 0.5;
-	}
+    background-image: linear-gradient(90deg, gold 100%, gray -100%);
+  }
+  .note {
+    margin-left: auto;
+    font-weight: 500;
+    opacity: 0.5;
+  }
 }
 
 .search-results {
-	display: flex;
-	flex-wrap: wrap;
-	margin: 0;
-	padding-inline-start: 0;
-	.no-results{
-		text-align: center;
-		width: 100%;
-		color: gray;
-	}
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding-inline-start: 0;
+  .no-results {
+    text-align: center;
+    width: 100%;
+    color: gray;
+  }
 }
 .load {
-	position: absolute;
-	width: 100%;
-	height: 100vh;
-	background: white;
-	top: 0;
-	left: 0;
-	opacity: 1;
-	z-index: 10282;
-	pointer-events: none;
-	.mdc-linear-progress {
-		position: sticky;
-		top: 0px;
-	}
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: white;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  z-index: 10282;
+  pointer-events: none;
+  .mdc-linear-progress {
+    position: sticky;
+    top: 0px;
+  }
 }
 .notification::after {
-	content: var(--notif-text) "";
-	color: white;
-	background: var(--mdc-theme-secondary);
-	padding: 6px;
-	border-radius: 200px;
-	font-family: Roboto;
-	font-size: 12px;
-	position: absolute;
-	right: 0;
-
+  content: var(--notif-text) "";
+  color: white;
+  background: var(--mdc-theme-secondary);
+  padding: 6px;
+  border-radius: 200px;
+  font-family: Roboto;
+  font-size: 12px;
+  position: absolute;
+  right: 0;
 }
 .notification {
-	text-decoration: none;
-	position: relative;
-
+  text-decoration: none;
+  position: relative;
 }

@@ -1,14 +1,7 @@
-{% extends 'templates/base.html' %}
-
-{% block styles %}
+{% extends 'templates/base.html' %} {% block styles %}
 <link href="/css/index.css" rel="stylesheet"/>
 <link href="/css/downloads.css" rel="stylesheet"/>
-{% endblock styles %}
-
-
-{% block content %}
-
-{% include "partials/_infos.html" %}
+{% endblock styles %} {% block content %} {% include "partials/_infos.html" %}
 <div class="cover"></div>
 <div class="display-mode-btn">
     <button class="mdc-icon-button material-icons view_mode_grid">view_module</button>
@@ -18,9 +11,7 @@
 <div class="expand_more">
     <button aria-label="Search" class="material-icons mdc-icon-button">expand_more</button>
 </div>
-{% endblock content %}
-
-{% block end_scripts %}
+{% endblock content %} {% block end_scripts %}
 <script src="/vendor/material-components-web.min.js"></script>
 <script src="/js/main.js"></script>
 <script src="/js/chapters.js"></script>

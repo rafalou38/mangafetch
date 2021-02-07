@@ -4,34 +4,34 @@ var pages = 0;
 var last_query = undefined;
 var query = "";
 async function search(q) {
-	clear_results();
-	query = q;
-	current_page = 1;
-	results = [];
-	load_more();
+  clear_results();
+  query = q;
+  current_page = 1;
+  results = [];
+  load_more();
 }
 
 async function load_more() {
-	if (current_page <= pages || last_query !== query) {
-		$(".expand_more").style.display = "none";
-		let r = await eel.search(query, current_page)();
-		[result, pages] = r;
+  if (current_page <= pages || last_query !== query) {
+    $(".expand_more").style.display = "none";
+    let r = await eel.search(query, current_page)();
+    [result, pages] = r;
 
-		add_results(result);
+    add_results(result);
 
-		console.log(pages, current_page);
+    console.log(pages, current_page);
 
-		$(".expand_more").style.display = "grid";
-		current_page += 1;
-		last_query = query;
-		if (current_page > pages) {
-			$(".expand_more").style.display = "none";
-		}
-	}
+    $(".expand_more").style.display = "grid";
+    current_page += 1;
+    last_query = query;
+    if (current_page > pages) {
+      $(".expand_more").style.display = "none";
+    }
+  }
 }
 
 $("#rechercher").onchange = (e) => {
-	search(e.target.value);
+  search(e.target.value);
 };
 
 $(".expand_more").onclick = load_more;

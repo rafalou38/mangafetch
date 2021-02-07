@@ -3,18 +3,18 @@ var f = [];
 var downloads = {};
 
 function diplay_inividual_chapter_progresion(info) {
-	// f.push(info)
-	// console.log(JSON.stringify(f));
-	if (document.URL.indexOf("download") === -1) return;
-	if (!downloads[info.th_id]) {
-		var li = document.createElement("li");
-		downloads[info.th_id] = li;
+  // f.push(info)
+  // console.log(JSON.stringify(f));
+  if (document.URL.indexOf("download") === -1) return;
+  if (!downloads[info.th_id]) {
+    var li = document.createElement("li");
+    downloads[info.th_id] = li;
 
-		li.classList.add("list_item");
-		li.dataset.id = info.th_id;
-		li.dataset.outFile = info.out;
-		li.addEventListener("click", reveal_file);
-		li.innerHTML = /*html*/ `
+    li.classList.add("list_item");
+    li.dataset.id = info.th_id;
+    li.dataset.outFile = info.out;
+    li.addEventListener("click", reveal_file);
+    li.innerHTML = /*html*/ `
 		<div class="body">
 			<img class="avatar" src="${info.cover}">
 			<div class="content">
@@ -34,34 +34,34 @@ function diplay_inividual_chapter_progresion(info) {
 		</div>
 		`;
 
-		downloads[info.th_id] = li;
-		$(".download-list").appendChild(li);
+    downloads[info.th_id] = li;
+    $(".download-list").appendChild(li);
 
-		init.linearProgress();
-	} else {
-		li = downloads[info.th_id];
-		li.querySelector(".first_line").innerText = info.id;
-		li.querySelector(".second_line").innerText = info.name;
-		li.querySelector(".avatar").innerText = info.cover;
-		li.dataset.id = info.th_id;
-		li.dataset.outFile = info.out;
-	}
-	if (info.name === "finished") {
-		li.querySelector(".mdc-linear-progress__bar-inner").style.borderColor = "green";
-	}
-	li.querySelector(".mdc-linear-progress").mdc.progress = info.percent;
+    init.linearProgress();
+  } else {
+    li = downloads[info.th_id];
+    li.querySelector(".first_line").innerText = info.id;
+    li.querySelector(".second_line").innerText = info.name;
+    li.querySelector(".avatar").innerText = info.cover;
+    li.dataset.id = info.th_id;
+    li.dataset.outFile = info.out;
+  }
+  if (info.name === "finished") {
+    li.querySelector(".mdc-linear-progress__bar-inner").style.borderColor = "green";
+  }
+  li.querySelector(".mdc-linear-progress").mdc.progress = info.percent;
 }
 function reveal_file(e) {
-	if (e.target.nodeName !== "BUTTON") eel.reveal_file(e.currentTarget.dataset.outFile);
+  if (e.target.nodeName !== "BUTTON") eel.reveal_file(e.currentTarget.dataset.outFile);
 }
 async function load_all() {
-	let all = await eel.get_current_downloads()();
-	all.forEach((e) => {
-		diplay_inividual_chapter_progresion(e);
-	});
+  let all = await eel.get_current_downloads()();
+  all.forEach((e) => {
+    diplay_inividual_chapter_progresion(e);
+  });
 }
 async function stop_download(e) {
-	eel.stop_download(e);
-	$(`[data-id="${e}"]`).remove();
+  eel.stop_download(e);
+  $(`[data-id="${e}"]`).remove();
 }
 load_all();

@@ -15,6 +15,7 @@ from myLog import logger
 
 class scansmangas_xyz(website):
     name = "scansmangas.xyz"
+
     @classmethod
     def search(cls, query="", page=1):
         uri = f"https://scansmangas.xyz/page/{page}/?s={urllib.parse.quote(query)}&post_type=manga"
@@ -34,7 +35,7 @@ class scansmangas_xyz(website):
                     "image": html_result.find("img")["src"],
                     "stars": html_result.find("i").text,
                     "id": html_result.find("a")["href"].split("/")[-2],
-                    "type": "manga"
+                    "type": "manga",
                 }
             )
         return (dict_results, int(last_chapter))

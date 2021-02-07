@@ -8,6 +8,7 @@ from myLog import logger
 
 class scan_1_com(website):
     name = "scan-1.com"
+
     @classmethod
     def search(cls, query="", page=1):
         uri = f"https://wwv.scan-1.com/search?query={query}"
@@ -21,7 +22,7 @@ class scan_1_com(website):
                     "image": None,
                     "stars": None,
                     "id": result["data"],
-                    "type": "manga"
+                    "type": "manga",
                 }
             )
         return dict_results, 0

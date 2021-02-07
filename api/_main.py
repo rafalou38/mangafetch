@@ -14,7 +14,9 @@ IMG_PATH = os.path.join(TMP_PATH, "images")
 OUT_PATH = "out/"
 PDF_PATH = os.path.join(TMP_PATH, "pdfs")
 
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0"
+user_agent = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0"
+)
 
 session = requests.session()
 
@@ -75,7 +77,9 @@ class website:
                 chunk = next(buffer)
                 mime = magic.from_buffer(chunk, mime=True)
                 extension = os.path.split(mime)[1]
-                filename = os.path.join(path, os.path.splitext(os.path.split(page)[1])[0] + "." + extension)
+                filename = os.path.join(
+                    path, os.path.splitext(os.path.split(page)[1])[0] + "." + extension
+                )
                 with open(filename, "wb") as f:
                     f.write(chunk + r.raw.read())
                 yield filename

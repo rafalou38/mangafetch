@@ -6,14 +6,14 @@ formatter = colorlog.ColoredFormatter(
     datefmt=None,
     reset=True,
     log_colors={
-        'DEBUG': 'cyan',
-        'INFO': 'green',
-        'WARNING': 'yellow',
-        'ERROR': 'red',
-        'CRITICAL': 'red,bg_white',
+        "DEBUG": "cyan",
+        "INFO": "green",
+        "WARNING": "yellow",
+        "ERROR": "red",
+        "CRITICAL": "red,bg_white",
     },
     secondary_log_colors={},
-    style='%'
+    style="%",
 )
 handler = colorlog.StreamHandler()
 handler.setFormatter(formatter)
@@ -26,7 +26,7 @@ def title_formatter(r):
     return r
 
 
-logger = colorlog.getLogger('test')
+logger = colorlog.getLogger("test")
 logger.addHandler(handler)
 logger.addFilter(title_formatter)
 
