@@ -155,7 +155,11 @@ def download_group(chapters: list, manga: str, group: int):
         f"threads: starting thread to download chapters {chapters} from {manga}"
     )
     th = current_api.downloader(
-        chapters, manga, group, current_api, eel.diplay_inividual_chapter_progresion
+        chapters=chapters,
+        manga_id=manga,
+        current_api=current_api,
+        group=group,
+        display=eel.diplay_inividual_chapter_progresion,
     )
     th.start()
 
