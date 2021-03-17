@@ -9,12 +9,14 @@ class ClosedThread(Exception):
 class downloader(threading.Thread):
     _current_downloads: List["downloader"] = []
 
-    def __init__(self, capi: Type["website"], display: callable, out_path: str = "out"):
+    def __init__(
+        self, current_api: Type["website"], display: callable, out_path: str = "out"
+    ):
         super().__init__()
         self.out_path = out_path
         self.th_id = id(self)
         self._running = True
-        self.api = capi
+        self.api = current_api
         self._display = display
         self.status = {}
         self.info = {}

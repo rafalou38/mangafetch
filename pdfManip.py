@@ -7,7 +7,7 @@ from PIL import Image
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from fpdf import FPDF
 import argparse
-
+import re
 from myLog import logger
 
 parser = argparse.ArgumentParser()
@@ -25,7 +25,11 @@ def _chunk(l, n):
 def mergeBookmarks(bookmarks: dict, out_file: str):
     pdf = FPDF(orientation="P", unit="pt", format="A4")
     for y, (chapter, files) in enumerate(bookmarks.items()):
-        files.sort(key=lambda file: int(os.path.splitext(os.path.split(file)[1])[0]))
+        files.sort(
+            key=lambda file: int(
+                re.search(r"\d+", os.path.splitext(os.path.split(file)[1])[0])[0]
+            )
+        )
 
         for i, imagef in enumerate(files):
             logger.debug(
@@ -57,7 +61,9 @@ def mergeBookmarks(bookmarks: dict, out_file: str):
 
 
 def merge(images_paths, out_file):
-    images_paths.sort(key=lambda file: int(os.path.splitext(os.path.split(file)[1])[0]))
+    images_paths.sort(key=lambda file: int(
+                re.search(r"\d+", os.path.splitext(os.path.split(file)[1])[0])[0]
+            ))
 
     pdf = FPDF(orientation="P", unit="pt", format="A4")
     chunk_bookmarks = {}

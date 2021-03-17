@@ -85,7 +85,7 @@ class manga_downloader(downloader):
     def _download_pages(self):
 
         c_page = 0
-        for chapter in self.chapters:
+        for chapter in sorted(self.chapters, key=float):
             self._bookmarks[chapter] = []
             pages = self._pages[chapter]
             logger.debug(f"download: chapter {chapter}")
@@ -111,6 +111,7 @@ class manga_downloader(downloader):
                 filename = f"{self.manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf"
             self.OUT_FILE = os.path.join(
                 self.out_path,
+                self.manga_id,
                 filename,
             )
             for _ in pdfManip.mergeBookmarks(book, self.OUT_FILE):
