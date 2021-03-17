@@ -172,13 +172,14 @@ def stop_download(th_id):
 
 @eel.expose
 def reveal_file(path):
-    logger.info(f"system: revealing file {path}")
-    if platform.system() == "Windows":
-        subprocess.Popen("explorer /select," + path, shell=True)
-    elif platform.system() == "Darwin":
-        subprocess.Popen(["open", path])
-    else:
-        subprocess.Popen(["xdg-open", path])
+    if path:
+        logger.info(f"system: revealing file {path}")
+        if platform.system() == "Windows":
+            subprocess.Popen("explorer /select," + path, shell=True)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        else:
+            subprocess.Popen(["xdg-open", path])
 
 
 eel.init("public")
