@@ -10,6 +10,7 @@ from .extractors import Extractor
 
 from .extractors.crunchyroll import crunchyroll
 from .extractors.scan_1_com import scan_1_com
+from .extractors.scan_fr_cc import scan_fr_cc
 from .extractors.scansmangas_xyz import scansmangas_xyz
 
 tmp_root_dir = os.path.join(gettempdir(), "mangafetch")
@@ -50,4 +51,5 @@ sources = {
     "crunchyroll.com": crunchyroll,
     "scansmangas.xyz": scansmangas_xyz,
     "scan-1.com": scan_1_com,
+    "scan-fr.cc": scan_fr_cc,
 }
