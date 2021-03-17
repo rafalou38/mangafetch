@@ -109,9 +109,11 @@ class manga_downloader(downloader):
                 filename = f"{self.manga_id} - {str(list(book.keys())[0])}.pdf"
             else:
                 filename = f"{self.manga_id} - {str(list(book.keys())[0])}-{str(list(book.keys())[-1:][0])}.pdf"
+            filepath = os.path.join(self.out_path, self.manga_id)
+            if not os.path.exists(filepath):
+                os.makedirs(filepath)
             self.OUT_FILE = os.path.join(
-                self.out_path,
-                self.manga_id,
+                filepath,
                 filename,
             )
             for _ in pdfManip.mergeBookmarks(book, self.OUT_FILE):
