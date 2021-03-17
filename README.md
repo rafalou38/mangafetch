@@ -1,11 +1,11 @@
 # MangaFetch
 
-manga fetch is an material design app to download mangas from different sites
+MangaFetch is a material design app to download mangas from different sites
 
 - [MangaFetch](#mangafetch)
   - [included websites](#included-websites)
   - [Install](#install)
-  - [Screnshots](#screnshots)
+  - [Screenshots](#screenshots)
     - [search view](#search-view)
     - [info view](#info-view)
     - [table](#table)
@@ -21,7 +21,7 @@ manga fetch is an material design app to download mangas from different sites
 
 ## Install
 
-first install the dependecys with
+first install the dependencies with
 
 ```shell
 pip install -r requirements.txt
@@ -39,7 +39,7 @@ then run it with
 python main.py
 ```
 
-## Screnshots
+## Screenshots
 
 ### search view
 
@@ -51,7 +51,7 @@ python main.py
 
 ![info view](images/details.png)
 
-here you can get info about the manga or bookmark is so it also apears in the bookmarks view
+here you can get info about the manga or bookmark is, so it also appears in the bookmarks view
 
 ---
 
@@ -59,9 +59,9 @@ here you can get info about the manga or bookmark is so it also apears in the bo
 
 ![table](images/table.png)
 
-on the table you can select all chapters, download individaly, read or download directly.
+On the table you can select all chapters, download individually, read or download directly.
 You can also limit the displayed chapters
 
-the group option is for how much chapters you want to put on each pdf.
+the group option is for how much chapters you want to put on each PDF.
 
 ---
