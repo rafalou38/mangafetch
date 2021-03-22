@@ -186,10 +186,16 @@ def reveal_file(path):
             subprocess.Popen(["xdg-open", path])
 
 
+if eel.brw.chm.find_path():
+    mode = "chrome"
+else:
+    mode = "auto"
+
 eel.init("public")
+
 eel.start(
     "html/index.html",
     cmdline_args=["--incognito"],
     jinja_templates="html",
-    mode="auto",
+    mode=mode,
 )
