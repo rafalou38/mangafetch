@@ -191,6 +191,11 @@ if eel.brw.chm.find_path():
 else:
     mode = "auto"
 
+try:
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+except OSError:
+    logger.warning("system: you may be running the code from the wrong place!")
+
 eel.init("public")
 
 eel.start(
