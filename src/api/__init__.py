@@ -28,6 +28,7 @@ user_agent = (
 )
 
 session = requests.session()
+session.headers.update({"User-Agent": user_agent[0]})
 
 
 def _exit():
@@ -48,7 +49,7 @@ def init():
 
 
 sources = {
-    "crunchyroll.com": crunchyroll,
+    # "crunchyroll.com": crunchyroll,
     "scansmangas.xyz": scansmangas_xyz,
     "scan-1.com": scan_1_com,
     "scan-fr.cc": scan_fr_cc,
