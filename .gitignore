@@ -11,3 +11,6 @@ tmp
 *.log
 
 test.py
+
+.prettierignore
+.prettierrc
