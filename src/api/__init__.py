@@ -3,7 +3,7 @@ import os
 from tempfile import TemporaryDirectory, gettempdir
 
 import requests
-
+import userpaths
 from myLog import logger
 from .downloaders import downloader
 from .extractors import Extractor
@@ -20,7 +20,7 @@ temp_dir = TemporaryDirectory(dir=tmp_root_dir)
 
 TMP_PATH = temp_dir.name
 IMG_PATH = os.path.join(TMP_PATH, "images")
-OUT_PATH = os.path.abspath("out/")
+OUT_PATH = os.path.join(userpaths.get_my_documents(), "mangafetch")
 PDF_PATH = os.path.join(TMP_PATH, "pdfs")
 
 user_agent = (

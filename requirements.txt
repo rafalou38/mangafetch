@@ -13,3 +13,4 @@ requests
 python-magic
 python-magic-bin
 bs4
+userpaths

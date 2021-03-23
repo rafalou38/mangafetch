@@ -37,8 +37,6 @@ class manga_downloader(downloader):
         try:
             self.__class__._current_downloads.append(self)
 
-            from .. import OUT_PATH
-
             logger.info(f"download: " + self.task_id)
             self.info = self.api.get_info(self.manga_id)
 

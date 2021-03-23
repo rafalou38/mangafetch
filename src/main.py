@@ -39,8 +39,6 @@ pretty_errors.configure(
 pretty_errors.blacklist("C:\\Users\\Rafael\\Anaconda3")
 pretty_errors.replace_stderr()
 
-OUT_PATH = "out"
-
 # current_api = api.sources[list(api.sources.keys())[0]]
 current_api = api.scansmangas_xyz
 

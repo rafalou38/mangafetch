@@ -10,10 +10,13 @@ class downloader(threading.Thread):
     _current_downloads: List["downloader"] = []
 
     def __init__(
-        self, current_api: Type["website"], display: callable, out_path: str = "out"
+        self, current_api: Type["website"], display: callable, out_path: str = None
     ):
         super().__init__()
-        self.out_path = out_path
+        if not out_path:
+            from .. import OUT_PATH
+
+            self.out_path = OUT_PATH
         self.th_id = id(self)
         self._running = True
         self.api = current_api
