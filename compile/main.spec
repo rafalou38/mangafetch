@@ -4,12 +4,12 @@ block_cipher = None
 
 
 a = Analysis(
-    ["../main.py"],
+    ["../src/main.py"],
     pathex=["D:\\new-manga-graphic"],
     binaries=[],
     datas=[
         ("C:\\Users\\Rafael\\Anaconda3\\lib\\site-packages\\eel\\eel.js", "eel"),
-        ("../public", "public"),
+        ("../src/public", "public"),
     ],
     hiddenimports=["bottle_websocket", "appdirs"],
     hookspath=[],
